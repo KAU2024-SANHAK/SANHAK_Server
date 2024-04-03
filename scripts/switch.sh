@@ -4,7 +4,7 @@ NOW_TIME="$(date +%Y)-$(date +%m)-$(date +%d) $(date +%H):$(date +%M):$(date +%S
 echo "[$NOW_TIME] 스위칭"
 sleep 10
 echo "[$NOW_TIME] 현재 구동중인 Port 확인"
-CURRENT_PROFILE=$(curl -s http://localhost/profile)
+CURRENT_PROFILE=$(curl -s https://www.honeyary-server.o-r.kr/profile)
 
 # 쉬고 있는 profile 찾기: dev1이 사용중이면 dev2가 쉬고 있고, 반대면 dev1이 쉬고 있음
 if [ $CURRENT_PROFILE == dev1 ]
@@ -23,7 +23,7 @@ echo "[$NOW_TIME] 전환할 Port: $IDLE_PORT"
 echo "[$NOW_TIME] Port 전환"
 echo "set \$service_url http://127.0.0.1:${IDLE_PORT};" | sudo tee /etc/nginx/conf.d/service-url.inc
 
-PROXY_PORT=$(curl -s http://localhost/profile)
+PROXY_PORT=$(curl -s https://www.honeyary-server.o-r.kr/profile)
 echo "[$NOW_TIME] Nginx Current Proxy Port: $PROXY_PORT"
 
 echo "[$NOW_TIME] Nginx Reload"

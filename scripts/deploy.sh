@@ -10,7 +10,7 @@ DEPLOY_PATH=/home/ubuntu/sanhak-server/nonstop/jar/
 cp $BUILD_PATH $DEPLOY_PATH
 
 echo "[$NOW_TIME] 현재 구동중인 Profile 확인"
-CURRENT_PROFILE=$(curl -s http://localhost/profile)
+CURRENT_PROFILE=$(curl -s https://www.honeyary-server.o-r.kr/profile)
 echo "[$NOW_TIME] $CURRENT_PROFILE"
 
 # 쉬고 있는 profile 찾기: dev1이 사용중이면 dev2가 쉬고 있고, 반대면 dev1이 쉬고 있음
