@@ -2,7 +2,7 @@ name: Sanhak Server CI (Develop)
 
 on:
   push:
-    branches: [ "chore/#3-cicd_settings" ]
+    branches: [ "develop" ]
   pull_request:
     branches: [ "develop" ]
 
