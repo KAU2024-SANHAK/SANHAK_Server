@@ -80,7 +80,7 @@ jobs:
       run:
         aws deploy create-deployment
         --application-name sanhak-server-codedeploy
-        —deployment-group-name sanhak-server-codedeploy-group
-        —file-exists-behavior OVERWRITE
-        —s3-location bucket=kkoolbee-storage,bundleType=zip,key=sanhak-server.zip
-        —region ap-northeast-2
+        --deployment-group-name sanhak-server-codedeploy-group
+        --file-exists-behavior OVERWRITE
+        --s3-location bucket=kkoolbee-storage,bundleType=zip,key=sanhak-server.zip
+        --region ap-northeast-2
