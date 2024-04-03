@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+    import: optional:application-secret.properties
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_LOCAL}
+    username: ${DB_USER_LOCAL}
+    password: ${DB_PWD_LOCAL}
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      ejb:
+        naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    properties:
+      hibernate:
+        auto_quote_keyword: true
+        format_sql: true
+
+server:
+  port: 8080
