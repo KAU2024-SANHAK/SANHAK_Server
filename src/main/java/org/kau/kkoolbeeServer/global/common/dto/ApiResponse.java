@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.kau.kkoolbeeServer.global.common.enums.ErrorType;
-import org.kau.kkoolbeeServer.global.common.enums.SuccessType;
+import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
+import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 
 @Getter
 @JsonPropertyOrder({"code", "message", "data"})

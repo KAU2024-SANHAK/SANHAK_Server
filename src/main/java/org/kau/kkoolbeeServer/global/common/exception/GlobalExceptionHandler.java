@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
-import org.kau.kkoolbeeServer.global.common.model.CustomException;
+import org.kau.kkoolbeeServer.global.common.exception.model.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.kau.kkoolbeeServer.global.common.enums.ErrorType.INTERNAL_SERVER_ERROR;
-import static org.kau.kkoolbeeServer.global.common.enums.ErrorType.REQUEST_VALIDATION_EXCEPTION;
+import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.INTERNAL_SERVER_ERROR;
+import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.REQUEST_VALIDATION_EXCEPTION;
 
 @Slf4j // 로그 출력
 @RestControllerAdvice
