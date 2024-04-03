@@ -4,7 +4,7 @@ name: Sanhak Server CD (Develop)
 # 해당 workflow가 언제 실행될 것인지에 대한 트리거를 지정
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "chore/#3-cicd_settings" ]
 
 env:
   S3_BUCKET_NAME: kkoolbee-storage
