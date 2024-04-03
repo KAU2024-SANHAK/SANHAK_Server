@@ -1,7 +1,7 @@
-package org.kau.kkoolbeeServer.global.common.model;
+package org.kau.kkoolbeeServer.global.common.exception.model;
 
 import lombok.Getter;
-import org.kau.kkoolbeeServer.global.common.enums.ErrorType;
+import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 
 //[호출 관계] Controller(요청 처리) -> Service(순서) -> Repository -> DB
 //throw new CustomException(ERROR_TYPE);
