@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary;
 
 import jakarta.persistence.*;
 import org.kau.kkoolbeeServer.domain.advice.Advice;
+import org.kau.kkoolbeeServer.domain.member.Member;
 import org.kau.kkoolbeeServer.global.common.domain.BaseTimeEntity;
 import org.springframework.cglib.core.Local;
 
@@ -11,9 +12,14 @@ import java.time.LocalDateTime;
 public class Diary extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "diary_id")
     private Long id;
 
-    private LocalDateTime writedAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    private LocalDateTime writedAt;   //이거 중복가능성이 좀 보인다.. BaseTimeEntitiy와
 
     @Enumerated(EnumType.STRING)
     private Feeling feeling;
@@ -26,5 +32,6 @@ public class Diary extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "advice_id")
     private Advice advice;
+
 
 }
