@@ -28,9 +28,12 @@ public class DiaryService {
         String diaryContent = diary.getContent();
 
 
+        Advice kindAdvice = diary.getKindAdvice();
+        Advice spicyAdvice = diary.getSpicyAdvice();
+        Feeling firstFeeling = diary.getFirstFeeling();
+        Feeling secondFeeling = diary.getSecondFeeling();
 
-        Advice advice = diary.getAdvice();
-
-        return new DiaryContentResponse(diaryContent, feelings, advice);
+        return new DiaryContentResponse(diaryContent, kindAdvice, spicyAdvice, firstFeeling, secondFeeling);
+    }
 
 }
