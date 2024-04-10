@@ -23,7 +23,10 @@ public class Diary extends BaseTimeEntity {
     private LocalDateTime writedAt;   //이거 중복가능성이 좀 보인다.. BaseTimeEntitiy와 ai서버를 위해서 만든 필드
 
     @Enumerated(EnumType.STRING)
-    private Feeling feeling;
+    private Feeling firstFeeling;
+
+    @Enumerated(EnumType.STRING)
+    private Feeling secondFeeling;
 
     @Column(nullable = false,length = 1000)
     private String content;
@@ -38,8 +41,14 @@ public class Diary extends BaseTimeEntity {
 
 
     @OneToOne
-    @JoinColumn(name = "advice_id")
-    private Advice advice;
+    @JoinColumn(name = "kind_advice_id")
+    private Advice kindAdvice;
+
+    @OneToOne
+    @JoinColumn(name = "spicy_advice_id")
+    private Advice spicyAdvice;
+
+
 
 
 }
