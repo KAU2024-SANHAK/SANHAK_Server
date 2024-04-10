@@ -28,6 +28,7 @@ public class Diary extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Feeling secondFeeling;
 
+
     @Column(nullable = false,length = 1000)
     private String content;
 
@@ -38,6 +39,7 @@ public class Diary extends BaseTimeEntity {
     private List<Feeling> summary;
 
 
+
     @OneToOne
     @JoinColumn(name = "kind_advice_id")
     private Advice kindAdvice;
@@ -45,6 +47,7 @@ public class Diary extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "spicy_advice_id")
     private Advice spicyAdvice;
+
 
 
 
