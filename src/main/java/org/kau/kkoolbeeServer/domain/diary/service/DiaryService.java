@@ -26,7 +26,7 @@ public class DiaryService {
 
         // 응답 데이터 구성
         String diaryContent = diary.getContent();
-        //List<Feeling> feelings = diary.getSummary(); // 이 부분은 수정해야할 수도 있습니다.
+
 
 
         Advice advice = diary.getAdvice();
