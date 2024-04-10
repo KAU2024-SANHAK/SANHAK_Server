@@ -38,8 +38,6 @@ public class Diary extends BaseTimeEntity {
     private List<Feeling> summary;
 
 
-
-
     @OneToOne
     @JoinColumn(name = "kind_advice_id")
     private Advice kindAdvice;
