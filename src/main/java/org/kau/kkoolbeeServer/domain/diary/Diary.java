@@ -36,6 +36,8 @@ public class Diary extends BaseTimeEntity {
 
 
     @Enumerated(EnumType.STRING)
+    @ElementCollection(targetClass = Feeling.class)
+    @CollectionTable(name = "diary_summary", joinColumns = @JoinColumn(name = "diary_id"))
     private List<Feeling> summary;
 
 
