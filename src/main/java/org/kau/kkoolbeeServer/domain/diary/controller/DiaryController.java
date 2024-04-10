@@ -6,6 +6,7 @@ import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class DiaryController {
         this.diaryService = diaryService;
     }
 
+    @PostMapping("/api/diary/content")
     public ResponseEntity<?> getDiaryContent(@RequestBody DiaryContentRequest request){
         Long diaryId=request.getDiaryId();
 

@@ -20,11 +20,11 @@ public class DiaryService {
     }
 
     public DiaryContentResponse getDiaryContent(Long diaryId) {
-        // 일기를 데이터베이스에서 조회
+
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundException("해당 일기를 찾을 수 없습니다."));
 
-        // 응답 데이터 구성
+
         String diaryContent = diary.getContent();
 
 
