@@ -11,5 +11,8 @@ public class Advice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    String content;
+    String kind_advice;
+
+    String spicy_advice;
+
 }
