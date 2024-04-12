@@ -10,13 +10,14 @@ import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 
 @Getter
-@JsonPropertyOrder({"code", "message", "data"})
+@JsonPropertyOrder({"status","message", "data"})
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
     private final int status; // 상태 코드
     private final String message; // 회원 조회가 정상 처리되었습니다!
+
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data; // 객체가 실제로 들어감

@@ -31,14 +31,15 @@ public class DiaryController {
 
         Long diaryId = diaryContentRequestDto.getDiary_id();
 
-        Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
+
         try{
+            Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
             if (diaryOptional.isPresent()) {
 
                 Diary diary = diaryOptional.get();
                 // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
                 AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
-                        diary.getAdvice().getSpicy_advice(),
+                        diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
                         diary.getAdvice().getKind_advice()
                 );
 

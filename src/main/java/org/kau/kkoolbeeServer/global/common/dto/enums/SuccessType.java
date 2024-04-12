@@ -12,7 +12,7 @@ public enum SuccessType {
     /**
      * 200 OK
      */
-    PROCESS_SUCCESS(HttpStatus.OK, "OK"),
+    PROCESS_SUCCESS(HttpStatus.CREATED, "요청이 성공했습니다."),
     ;
 
     private final HttpStatus httpStatus;

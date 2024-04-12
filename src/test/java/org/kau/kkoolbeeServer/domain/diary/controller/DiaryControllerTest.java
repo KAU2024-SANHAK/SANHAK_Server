@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,6 +67,8 @@ public class DiaryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseDto))));
+                .andExpect(content().json(objectMapper.writeValueAsString(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseDto))))
+                .andDo(print());
+
     }
 }
