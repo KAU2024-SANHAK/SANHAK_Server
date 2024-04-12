@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.member;
 
 import jakarta.persistence.*;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
+import org.kau.kkoolbeeServer.domain.summary.Summary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private UserDiaryType userDiaryType;
+
+    @OneToMany(mappedBy = "member") // Summary에 대한 참조 추가
+    private List<Summary> summaries = new ArrayList<>();
 
 
 
