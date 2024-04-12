@@ -1,6 +1,8 @@
 package org.kau.kkoolbeeServer.domain.diary;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.kau.kkoolbeeServer.domain.advice.Advice;
 import org.kau.kkoolbeeServer.domain.member.Member;
 import org.kau.kkoolbeeServer.global.common.domain.BaseTimeEntity;
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Diary extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
