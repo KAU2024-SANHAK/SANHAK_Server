@@ -16,6 +16,10 @@ public class Diary extends BaseTimeEntity {
     @Column(name = "diary_id")
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "advice_id")
+    private Advice advice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -31,9 +35,7 @@ public class Diary extends BaseTimeEntity {
 
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "advice_id")
-    private Advice advice;
+
 
 
 
