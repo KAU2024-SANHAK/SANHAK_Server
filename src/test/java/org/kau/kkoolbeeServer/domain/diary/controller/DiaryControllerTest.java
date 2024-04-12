@@ -7,6 +7,7 @@ import org.kau.kkoolbeeServer.domain.advice.Advice;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
+import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
 
 import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryContentResponseDto;
@@ -21,14 +22,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(DiaryController.class)
@@ -71,4 +72,24 @@ public class DiaryControllerTest {
                 .andDo(print());
 
     }
+
+    /*@Test
+    public void getDiariesByMonth_ReturnsDiaryList() throws Exception {
+        given(diaryService.findDiariesByMonth(LocalDateTime.of(2024, 1, 7, 0, 0))).willReturn(diaryList);
+        Diary diary1 = new Diary(1L, "Title1", "Content1", LocalDateTime.of(2024, 1, 7, 0, 0));
+        Diary diary2 = new Diary(2L, "Title2", "Content2", LocalDateTime.of(2024, 1, 8, 0, 0));
+        Diary diary3 = new Diary(3L, "Title3", "Content3", LocalDateTime.of(2024, 1, 9, 0, 0));
+
+        diaryList = Arrays.asList(diary1, diary2, diary3);
+        mockMvc.perform(post("/api/diary/list/calendar")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new CurrentDateRequestDto(LocalDateTime.of(2024, 1, 7, 0, 0)))))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("요청이 성공했습니다."))
+                .andExpect(jsonPath("$.data.monthList[0].diaryId").value(diaryList.get(0).getId()))
+                .andExpect(jsonPath("$.data.monthList[1].diaryTitle").value(diaryList.get(1).getTitle()))
+                .andExpect(jsonPath("$.data.monthList[2].createdDate").value(diaryList.get(2).getCreatedAt().toString()));
+    }*/
 }
