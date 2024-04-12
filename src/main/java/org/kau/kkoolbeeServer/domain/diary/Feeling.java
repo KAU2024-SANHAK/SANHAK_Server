@@ -5,7 +5,11 @@ public enum Feeling {
     SAD,
     ANGRY,
 
-    WORRY,
+    WORRYIED,
 
-    SURPRISED
+    RELAX,
+
+    SURPRISED,
+
+    NONE
 }
