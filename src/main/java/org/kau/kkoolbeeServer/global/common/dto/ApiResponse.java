@@ -15,7 +15,7 @@ import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponse<T> {
 
-    private final int code; // 상태 코드
+    private final int status; // 상태 코드
     private final String message; // 회원 조회가 정상 처리되었습니다!
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
