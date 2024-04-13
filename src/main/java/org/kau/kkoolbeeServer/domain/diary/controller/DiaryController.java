@@ -2,7 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
-import org.kau.kkoolbeeServer.domain.diary.dto.CalenderDiaryDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.CalenderDiaryResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryContentResponseDto;
@@ -12,13 +12,11 @@ import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.Currency;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class DiaryController {
+
 
     private DiaryService diaryService;
     @Autowired
@@ -83,13 +82,11 @@ public class DiaryController {
                         .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, "해당 월에 대한 일기가 존재하지 않습니다."));
             }
 
-
-
-            List<CalenderDiaryDto> diaryDtos=diaries.stream()
-                    .map(diary -> new CalenderDiaryDto(diary.getId(), diary.getTitle(), diary.getCreatedAt()))
+            List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
+                    .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
                     .collect(Collectors.toList());
 
-            Map<String,List<CalenderDiaryDto>> responseMap= Map.of("monthList",diaryDtos);
+            Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
 
         }catch (Exception e){
@@ -101,7 +98,4 @@ public class DiaryController {
 
 
     }
-
-
-
 }
