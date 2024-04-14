@@ -35,11 +35,13 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-        Long diaryId = diaryContentRequestDto.getDiary_id();
+        Long diaryId = diaryContentRequestDto.getDiaryId();
+        System.out.println(diaryId);
 
 
         try{
             Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
+
             if (diaryOptional.isPresent()) {
 
                 Diary diary = diaryOptional.get();
@@ -47,7 +49,9 @@ public class DiaryController {
                 AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
                         diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
                         diary.getAdvice().getKind_advice()
+
                 );
+
 
 
                 DiaryContentResponseDto responseDto = new DiaryContentResponseDto(

@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiaryContentRequestDto {
-    private Long diary_id;
+    private Long diaryId;
 }
