@@ -1,6 +1,7 @@
 package org.kau.kkoolbeeServer.domain.diary.service;
 
 import org.kau.kkoolbeeServer.domain.diary.Diary;
+import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.repository.DiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class DiaryService {
     }
 
     public List<Diary> findDiariesByFeeling(String feeling) {
-        return diaryRepository.findByFeeling(Feeling.valueOf(feeling.toUpperCase()));
+        return diaryRepository.findByFeeling(Feeling.valueOf(feeling));
     }
 
 

@@ -2,10 +2,12 @@ package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
+import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.CalenderDiaryResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryContentResponseDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.FeelingListResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
@@ -101,7 +103,30 @@ public class DiaryController {
 
 
 
+
     }
+
+    @PostMapping("/api/diary/list/feeling")
+    public ResponseEntity<ApiResponse<?>> getDiariesByFeeling(@RequestBody FeelingListRequestDto requestDto) {
+        try {
+            List<Diary> diaries = diaryService.findDiariesByFeeling(requestDto.getFeeling());
+            if (diaries.isEmpty()) {
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, "해당 감정에 대한 일기가 존재하지 않습니다."));
+            }
+
+            List<FeelingListResponseDto> feelingList = diaries.stream()
+                    .map(diary -> new FeelingListResponseDto(diary.getId(), diary.getWritedAt(), diary.getTitle()))
+                    .collect(Collectors.toList());
+
+            Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
+        } catch (Exception e) {
+            return ResponseEntity.status(ErrorType.INTERNAL_SERVER_ERROR.getHttpStatus())
+                    .body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
+        }
+    }
+
 
 
 }
