@@ -32,5 +32,9 @@ public class DiaryService {
         return diaryRepository.findByWritedAtBetween(startOfMonth, endOfMonth);
     }
 
+    public List<Diary> findDiariesByFeeling(String feeling) {
+        return diaryRepository.findByFeeling(Feeling.valueOf(feeling.toUpperCase()));
+    }
+
 
 }
