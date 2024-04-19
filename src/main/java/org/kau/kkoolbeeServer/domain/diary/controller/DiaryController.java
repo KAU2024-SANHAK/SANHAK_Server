@@ -29,7 +29,7 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-        Long diaryId = diaryContentRequestDto.getDiary_id();
+        Long diaryId = diaryContentRequestDto.getDiaryId();
 
 
         try{
