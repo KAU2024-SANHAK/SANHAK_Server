@@ -68,7 +68,8 @@ public class DiaryController {
                 DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
                         diary.getContent(),
                         adviceResponseDto,
-                        diary.getFeeling().toString()
+                        diary.getFeeling().toString(),
+                        diary.getImageurl()
                 );
 
                 return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseDto));
