@@ -1,6 +1,7 @@
 package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import jakarta.validation.Valid;
+/*import org.kau.kkoolbeeServer.S3.S3UploaderService;*/
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
@@ -14,13 +15,17 @@ import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +37,11 @@ public class DiaryController {
 
 
     private DiaryService diaryService;
+    /*private final S3UploaderService s3UploaderService;*/
     @Autowired
     public DiaryController(DiaryService diaryService) {
         this.diaryService = diaryService;
+
     }
 
     @PostMapping("/api/diary/content")
@@ -111,6 +118,28 @@ public class DiaryController {
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
 
     }
+
+   /* @PostMapping("/api/diary/create/slow")
+    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestPart("imageurl")MultipartFile image,
+                                                              @RequestPart("diaryTitle") String diaryTitle,
+                                                              @RequestPart("diaryContent") String diaryContent){
+
+        try {
+            String imageUrl = s3UploaderService.upload(image);
+            Diary diary = new Diary();
+            diary.setTitle(diaryTitle);
+            diary.setContent(diaryContent);
+            diary.setImageurl(imageUrl);
+
+            Diary savedDiary=diaryService.saveDiary(diary);
+
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS,diary.getId()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
+        }
+    }
+
+*/
 
 
 

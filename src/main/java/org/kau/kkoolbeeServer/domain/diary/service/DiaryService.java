@@ -37,5 +37,9 @@ public class DiaryService {
         return diaryRepository.findByFeeling(Feeling.valueOf(feeling));
     }
 
+    public Diary saveDiary(Diary diary){
+        return diaryRepository.save(diary);
+    }
+
 
 }

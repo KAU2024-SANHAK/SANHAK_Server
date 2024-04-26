@@ -70,10 +70,12 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Exception> handleException(final Exception e, final HttpServletRequest request) throws IOException {
+    protected ApiResponse<?> handleException(final Exception e, final HttpServletRequest request) throws IOException {
         log.error("Unexpected error occurred여기여기", e);
-        return ApiResponse.error(INTERNAL_SERVER_ERROR, e);
+        return ApiResponse.error(INTERNAL_SERVER_ERROR);
     }
+
+    //이부분수정   서버내부오류는 오류 데이터를 줄 필요가 없이 서버내부오류만 띄우면 되므로!!
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)    //이부분추가
     @ExceptionHandler(HttpMessageConversionException.class)
@@ -91,6 +93,8 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, "잘못된 요청 형식입니다.");
     }
 
+    //이부분추가
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
@@ -99,6 +103,10 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error occurred", e);
         return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, "잘못된 요청 형식입니다.");
     }
+
+    //이부분추가
+
+
 
 
 

@@ -43,8 +43,9 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<Exception> error(ErrorType errorType, Exception e) {
-        return new ApiResponse<>(errorType.getHttpStatusCode(), errorType.getMessage());
-        //이부분바꿈!! data필요하지않을거같아서!
+        return new ApiResponse<>(errorType.getHttpStatusCode(), errorType.getMessage(),e);
+
+
     }
 
     public static <T> ApiResponse<T> error(ErrorType errorType, T data) {
