@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.kau.kkoolbeeServer.domain.advice.Advice;
 import org.kau.kkoolbeeServer.domain.member.Member;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Diary extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,18 +39,10 @@ public class Diary extends BaseTimeEntity {
     @Column(nullable = false,length = 1000)
     private String content;
 
+
+    private String imageurl;
+
     private String title;
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
