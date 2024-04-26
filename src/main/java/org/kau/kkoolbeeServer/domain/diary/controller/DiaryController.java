@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import jakarta.validation.Valid;
 /*import org.kau.kkoolbeeServer.S3.S3UploaderService;*/
+import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
@@ -37,10 +38,11 @@ public class DiaryController {
 
 
     private DiaryService diaryService;
-    /*private final S3UploaderService s3UploaderService;*/
+    private final S3UploaderService s3UploaderService;
     @Autowired
-    public DiaryController(DiaryService diaryService) {
+    public DiaryController(DiaryService diaryService,S3UploaderService s3UploaderService) {
         this.diaryService = diaryService;
+        this.s3UploaderService=s3UploaderService;
 
     }
 
@@ -119,7 +121,7 @@ public class DiaryController {
 
     }
 
-   /* @PostMapping("/api/diary/create/slow")
+    @PostMapping("/api/diary/create/slow")
     public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestPart("imageurl")MultipartFile image,
                                                               @RequestPart("diaryTitle") String diaryTitle,
                                                               @RequestPart("diaryContent") String diaryContent){
@@ -139,7 +141,6 @@ public class DiaryController {
         }
     }
 
-*/
 
 
 

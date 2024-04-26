@@ -1,4 +1,3 @@
-/*
 package org.kau.kkoolbeeServer.S3;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -42,4 +41,3 @@ public class S3UploaderService {
         return convertedFile;
     }
 }
-*/

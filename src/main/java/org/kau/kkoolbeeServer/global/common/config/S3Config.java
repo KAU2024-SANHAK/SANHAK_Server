@@ -1,4 +1,3 @@
-/*
 package org.kau.kkoolbeeServer.global.common.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -30,4 +29,3 @@ public class S3Config {
                 .build();
     }
 }
-*/
