@@ -1,5 +1,6 @@
 package org.kau.kkoolbeeServer.domain.diary.controller;
 
+import jakarta.validation.Valid;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
@@ -14,6 +15,8 @@ import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,11 +40,8 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-        Long diaryId = diaryContentRequestDto.getDiaryId();
-        System.out.println(diaryId);
+           Long diaryId = diaryContentRequestDto.getDiaryId();
 
-
-        try{
             Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
 
             if (diaryOptional.isPresent()) {
@@ -69,19 +69,11 @@ public class DiaryController {
                 //diary 가 null 일 경우 요청이상함 반환
             }
 
-        } catch (Exception e){
-
-            return ResponseEntity.status(ErrorType.INTERNAL_SERVER_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
-            //다른 오류가 났을 경우 서버에러
-
-        }
-
     }
     @PostMapping("/api/diary/list/calendar")
     public ResponseEntity<ApiResponse<?>> getDiariesByMonth(@RequestBody CurrentDateRequestDto requestDto){
         LocalDateTime currentDate = requestDto.getCurrentDate();
-        try{
+
             List<Diary>diaries=diaryService.findDiariesByMonth(currentDate);
             if(diaries.isEmpty()){
                 return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
@@ -95,12 +87,6 @@ public class DiaryController {
             Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
 
-        }catch (Exception e){
-            return ResponseEntity.status(ErrorType.INTERNAL_SERVER_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
-
-        }
-
 
 
 
@@ -108,8 +94,10 @@ public class DiaryController {
 
     @PostMapping("/api/diary/list/feeling")
     public ResponseEntity<ApiResponse<?>> getDiariesByFeeling(@RequestBody FeelingListRequestDto requestDto) {
-        try {
+
+
             List<Diary> diaries = diaryService.findDiariesByFeeling(requestDto.getFeeling());
+
             if (diaries.isEmpty()) {
                 return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
                         .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, "해당 감정에 대한 일기가 존재하지 않습니다."));
@@ -121,10 +109,7 @@ public class DiaryController {
 
             Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
-        } catch (Exception e) {
-            return ResponseEntity.status(ErrorType.INTERNAL_SERVER_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
-        }
+
     }
 
 

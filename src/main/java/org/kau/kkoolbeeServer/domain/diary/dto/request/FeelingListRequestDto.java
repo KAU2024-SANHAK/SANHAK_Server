@@ -5,5 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class FeelingListRequestDto {
+
     private String feeling;
 }
