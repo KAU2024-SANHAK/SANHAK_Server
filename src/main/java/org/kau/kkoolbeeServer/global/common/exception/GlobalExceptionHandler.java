@@ -70,9 +70,9 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Exception> handleException(final Exception e, final HttpServletRequest request) throws IOException {
-        log.error("Unexpected error occurred여기여기", e);
-        return ApiResponse.error(INTERNAL_SERVER_ERROR, e);
+    protected ApiResponse<?> handleException(final Exception e, final HttpServletRequest request) throws IOException {
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(INTERNAL_SERVER_ERROR);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)    //이부분추가
