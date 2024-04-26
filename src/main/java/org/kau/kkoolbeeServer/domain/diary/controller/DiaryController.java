@@ -69,7 +69,8 @@ public class DiaryController {
                         diary.getContent(),
                         adviceResponseDto,
                         diary.getFeeling().toString(),
-                        diary.getImageurl()
+                        diary.getImageurl(),
+                        diary.getTitle()
                 );
 
                 return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseDto));
