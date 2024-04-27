@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     protected ApiResponse<?> handleException(final Exception e, final HttpServletRequest request) throws IOException {
-        log.error("Unexpected error occurred여기여기", e);
+        log.error("Unexpected error occurred", e);
         return ApiResponse.error(INTERNAL_SERVER_ERROR);
     }
 
