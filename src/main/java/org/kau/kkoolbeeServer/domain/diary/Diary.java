@@ -36,7 +36,7 @@ public class Diary extends BaseTimeEntity {
     private Feeling feeling;
 
 
-    @Column(nullable = false,length = 1000)
+    @Column(nullable = false,columnDefinition = "TEXT")
     private String content;
 
 

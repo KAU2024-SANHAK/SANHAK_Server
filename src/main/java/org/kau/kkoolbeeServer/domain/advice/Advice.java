@@ -1,9 +1,6 @@
 package org.kau.kkoolbeeServer.domain.advice;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +15,10 @@ public class Advice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
+    @Column(columnDefinition = "TEXT")
     String kind_advice;
 
+    @Column(columnDefinition = "TEXT")
     String spicy_advice;
 
     public Advice(String kind_advice, String spicy_advice) {
