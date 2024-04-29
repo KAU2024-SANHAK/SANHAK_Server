@@ -10,6 +10,7 @@ import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryContentResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.FeelingListResponseDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.SlowTypeCreateResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
@@ -135,8 +136,9 @@ public class DiaryController {
             diary.setImageurl(imageUrl);
 
             Diary savedDiary=diaryService.saveDiary(diary);
+            SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl());
 
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,diary.getId()));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
         }
