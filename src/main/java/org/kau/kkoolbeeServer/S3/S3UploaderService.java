@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,8 @@ import java.util.UUID;
 public class S3UploaderService {
 
     private final AmazonS3 amazonS3Client;
-    private String bucketName = "your-bucket-name";
+    @Value("${cloud.aws.credentials.s3-bucket-name}")
+    private String bucketName;
 
     @Autowired
     public S3UploaderService(AmazonS3 amazonS3Client) {

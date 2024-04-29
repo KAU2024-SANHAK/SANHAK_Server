@@ -1,7 +1,6 @@
 package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import jakarta.validation.Valid;
-/*import org.kau.kkoolbeeServer.S3.S3UploaderService;*/
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
@@ -73,10 +72,10 @@ public class DiaryController {
                         diary.getTitle()
                 );
 
-                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseDto));
+                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseDto));
             } else {
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION));
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
                 //diary 가 null 일 경우 요청이상함 반환
             }
 
@@ -87,8 +86,8 @@ public class DiaryController {
 
             List<Diary>diaries=diaryService.findDiariesByMonth(currentDate);
             if(diaries.isEmpty()){
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, "해당 월에 대한 일기가 존재하지 않습니다."));
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
             }
 
             List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
@@ -96,7 +95,7 @@ public class DiaryController {
                     .collect(Collectors.toList());
 
             Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseMap));
 
 
 
@@ -110,8 +109,8 @@ public class DiaryController {
             List<Diary> diaries = diaryService.findDiariesByFeeling(requestDto.getFeeling());
 
             if (diaries.isEmpty()) {
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_EXCEPTION.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_EXCEPTION, "해당 감정에 대한 일기가 존재하지 않습니다."));
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 감정에 대한 일기가 존재하지 않습니다."));
             }
 
             List<FeelingListResponseDto> feelingList = diaries.stream()
@@ -119,7 +118,7 @@ public class DiaryController {
                     .collect(Collectors.toList());
 
             Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS, responseMap));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseMap));
 
     }
 
@@ -137,7 +136,7 @@ public class DiaryController {
 
             Diary savedDiary=diaryService.saveDiary(diary);
 
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESS,diary.getId()));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS,diary.getId()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
         }

@@ -18,6 +18,15 @@ spring:
       hibernate:
         auto_quote_keyword: true
         format_sql: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+kakao:
+  client-id: ${KAKAO_ID}
+  authorization-grant-type: authorization_code
+  redirect-uri: ${KAKAO_REDIRECT_DEV}
 
 server:
   port: 8081

@@ -43,7 +43,7 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<Exception> error(ErrorType errorType, Exception e) {
-        return new ApiResponse<>(errorType.getHttpStatusCode(), errorType.getMessage(),e);
+        return new ApiResponse<>(errorType.getHttpStatusCode(), errorType.getMessage());
 
 
     }

@@ -2,6 +2,19 @@ spring:
   profiles:
     active: local
 
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${ACCESS_KEY}
+      secretKey: ${SECRET_KEY}
+    region: ap-northeast-2
+    s3:
+      bucket-name: ${BUCKET_NAME}
+
+jwt:
+  secret: ${JWT_SECRET}
+
 logging:
   level:
     com:

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.INTERNAL_SERVER_ERROR;
-import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.REQUEST_VALIDATION_EXCEPTION;
+import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.REQUEST_VALIDATION_ERROR;
 
 @Slf4j // 로그 출력
 @RestControllerAdvice
@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
             String validKeyName = String.format("valid_%s", error.getField());
             validateDetails.put(validKeyName, error.getDefaultMessage());
         }
-        return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, validateDetails);
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, validateDetails);
     }
 
     /**
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
     protected ApiResponse<?> handleHttpMessageConversionException(HttpMessageConversionException e) {
         // 로그 기록, 에러 메시지 생성 등 필요한 처리
         log.error("Unexpected error occurred", e);
-        return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, "잘못된 요청 형식입니다.");
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
     protected ApiResponse<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         // 로그 기록, 오류 메시지 생성 및 기타 필요한 처리
         log.error("Unexpected error occurred", e);
-        return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, "잘못된 요청 형식입니다.");
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
     }
 
     //이부분추가
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
     protected ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
         // 로그 기록, 오류 메시지 생성 및 기타 필요한 처리
         log.error("Unexpected error occurred", e);
-        return ApiResponse.error(REQUEST_VALIDATION_EXCEPTION, "잘못된 요청 형식입니다.");
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
     }
 
     //이부분추가
