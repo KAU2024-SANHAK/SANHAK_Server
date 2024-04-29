@@ -72,7 +72,7 @@ public class DiaryController {
                         diary.getTitle()
                 );
 
-                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseDto));
+                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
             } else {
                 return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
                         .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
@@ -95,7 +95,7 @@ public class DiaryController {
                     .collect(Collectors.toList());
 
             Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseMap));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
 
 
@@ -118,7 +118,7 @@ public class DiaryController {
                     .collect(Collectors.toList());
 
             Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS, responseMap));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
     }
 
@@ -136,7 +136,7 @@ public class DiaryController {
 
             Diary savedDiary=diaryService.saveDiary(diary);
 
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_CREATE_SUCCESS,diary.getId()));
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,diary.getId()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
         }
