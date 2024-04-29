@@ -17,7 +17,7 @@ import java.util.UUID;
 public class S3UploaderService {
 
     private final AmazonS3 amazonS3Client;
-    @Value("${cloud.aws.credentials.s3-bucket-name}")
+    @Value("${cloud.aws.s3.bucket-name}")
     private String bucketName;
 
     @Autowired
