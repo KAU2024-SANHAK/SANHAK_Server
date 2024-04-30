@@ -1,6 +1,7 @@
 package org.kau.kkoolbeeServer.domain.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.kau.kkoolbeeServer.domain.member.UserDiaryType;
 import org.kau.kkoolbeeServer.domain.member.dto.response.MemberLoginResponseDto;
 import org.kau.kkoolbeeServer.domain.member.service.MemberService;
 import org.kau.kkoolbeeServer.global.auth.fegin.kakao.KakaoLoginService;
@@ -20,6 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final KakaoLoginService kakaoLoginService;
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<MemberLoginResponseDto>> login(
@@ -47,4 +49,35 @@ public class MemberController {
         @RequestHeader("Authorization") String code) {
         return ResponseEntity.ok(ApiResponse.success(SuccessType.KAKAO_ACCESS_TOKEN_SUCCESS, kakaoLoginService.getKakaoAccessToken(code)));
     }
+
+    /*@PostMapping("/member/character")
+    public ResponseEntity<ApiResponse<?>> diaryType(
+            @RequestHeader("Authorization")String token,@RequestBody String userDiaryType){
+
+        Long memberId=jwtProvider.getUserFromJwt(token);
+        UserDiaryType DiaryType=UserDiaryType.valueOf(userDiaryType);
+        memberService.setUserDiaryType(memberId,DiaryType);
+
+        return ResponseEntity.ok(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
+
+
+    }
+*/
+   /* @PostMapping("/member/character")
+    public ResponseEntity<ApiResponse<?>> diaryType(
+            @RequestHeader("Authorization")String token,@RequestBody String userDiaryType){
+
+        memberService.setUserDiaryType(token,userDiaryType);
+
+        return ResponseEntity.ok(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
+
+
+    }
+
+
+    @GetMapping("/member/member")
+    public ResponseEntity<ApiResponse<?>> diarry(Principal principal)
+*/
+
+
 }
