@@ -1,4 +1,4 @@
-package org.kau.kkoolbeeServer.global.common.config;
+package org.kau.kkoolbeeServer.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
