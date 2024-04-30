@@ -7,6 +7,8 @@ import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.exception.model.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -41,6 +43,7 @@ public class GlobalExceptionHandler {
 
         Errors errors = e.getBindingResult();
         Map<String, String> validateDetails = new HashMap<>();
+        log.error("Unexpected error occurred not valid", e);
 
         for (FieldError error : errors.getFieldErrors()) {
             String validKeyName = String.format("valid_%s", error.getField());
@@ -67,7 +70,44 @@ public class GlobalExceptionHandler {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Exception> handleException(final Exception e, final HttpServletRequest request) throws IOException {
-        return ApiResponse.error(INTERNAL_SERVER_ERROR, e);
+    protected ApiResponse<?> handleException(final Exception e, final HttpServletRequest request) throws IOException {
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(INTERNAL_SERVER_ERROR);
     }
+
+    //이부분수정   서버내부오류는 오류 데이터를 줄 필요가 없이 서버내부오류만 띄우면 되므로!!
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)    //이부분추가
+    @ExceptionHandler(HttpMessageConversionException.class)
+    protected ApiResponse<?> handleHttpMessageConversionException(HttpMessageConversionException e) {
+        // 로그 기록, 에러 메시지 생성 등 필요한 처리
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ApiResponse<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        // 로그 기록, 오류 메시지 생성 및 기타 필요한 처리
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
+    }
+
+    //이부분추가
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ApiResponse<?> handleIllegalArgumentException(IllegalArgumentException e) {
+        // 로그 기록, 오류 메시지 생성 및 기타 필요한 처리
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
+    }
+
+    //이부분추가
+
+
+
+
+
 }
