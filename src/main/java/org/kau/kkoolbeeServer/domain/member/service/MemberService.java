@@ -92,13 +92,21 @@ public class MemberService {
         return memberRepository.existsByKakaoId(kakaoId);
     }
 
-   /* @Transactional
+    @Transactional
     public void setUserDiaryType(Long memberId, UserDiaryType userDiaryType){
+
         Member member=memberRepository.findByIdOrThrow(memberId);
         member.setDiaryType(userDiaryType);
         memberRepository.save(member);
 
-    }*/
+    }
+
+    @Transactional(readOnly = true)
+    public Member findByIdOrThrow(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER_ERROR));
+    }
+
 
   /*  @Transactional
     public void setUserDiaryType(String Token, String userDiaryType){

@@ -40,7 +40,7 @@ public class MemberController {
     @PatchMapping("/log-out") // Spring Security 자체의 logout과 겹치지 않기 위해 이렇게 설정
     public ResponseEntity<ApiResponse<?>> logout(Principal principal) {
 
-        memberService.logout(JwtProvider.getUserFromPrincial(principal));
+        memberService.logout(JwtProvider.getUserFromPrincipal(principal));
         return ResponseEntity.ok(ApiResponse.success(SuccessType.LOGOUT_SUCCESS));
     }
 
@@ -50,34 +50,18 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.success(SuccessType.KAKAO_ACCESS_TOKEN_SUCCESS, kakaoLoginService.getKakaoAccessToken(code)));
     }
 
-    /*@PostMapping("/member/character")
-    public ResponseEntity<ApiResponse<?>> diaryType(
-            @RequestHeader("Authorization")String token,@RequestBody String userDiaryType){
+    @PostMapping("/member/character")
+    public ResponseEntity<ApiResponse<?>> diaryType(Principal principal,@RequestBody String userDiaryType){
 
-        Long memberId=jwtProvider.getUserFromJwt(token);
-        UserDiaryType DiaryType=UserDiaryType.valueOf(userDiaryType);
-        memberService.setUserDiaryType(memberId,DiaryType);
+        Long memberId=JwtProvider.getUserFromPrincipal(principal);
 
-        return ResponseEntity.ok(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
-
-
-    }
-*/
-   /* @PostMapping("/member/character")
-    public ResponseEntity<ApiResponse<?>> diaryType(
-            @RequestHeader("Authorization")String token,@RequestBody String userDiaryType){
-
-        memberService.setUserDiaryType(token,userDiaryType);
+        UserDiaryType diaryType=UserDiaryType.valueOf(userDiaryType);
+        memberService.setUserDiaryType(memberId,diaryType);
 
         return ResponseEntity.ok(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
 
 
     }
-
-
-    @GetMapping("/member/member")
-    public ResponseEntity<ApiResponse<?>> diarry(Principal principal)
-*/
 
 
 }
