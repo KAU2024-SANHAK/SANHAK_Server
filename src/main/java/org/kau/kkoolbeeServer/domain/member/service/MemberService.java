@@ -3,6 +3,7 @@ package org.kau.kkoolbeeServer.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kau.kkoolbeeServer.domain.member.Member;
+import org.kau.kkoolbeeServer.domain.member.UserDiaryType;
 import org.kau.kkoolbeeServer.domain.member.dto.response.MemberLoginResponseDto;
 import org.kau.kkoolbeeServer.domain.member.repository.MemberRepository;
 import org.kau.kkoolbeeServer.global.auth.fegin.kakao.KakaoLoginService;
@@ -90,4 +91,33 @@ public class MemberService {
     private boolean isUserByKakaoId(String kakaoId) {
         return memberRepository.existsByKakaoId(kakaoId);
     }
+
+    @Transactional
+    public void setUserDiaryType(Long memberId, UserDiaryType userDiaryType){
+
+        Member member=memberRepository.findByIdOrThrow(memberId);
+        member.setDiaryType(userDiaryType);
+        memberRepository.save(member);
+
+    }
+
+    @Transactional(readOnly = true)
+    public Member findByIdOrThrow(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER_ERROR));
+    }
+
+
+  /*  @Transactional
+    public void setUserDiaryType(String Token, String userDiaryType){
+
+        Token=parseTokenString(Token);
+        UserDiaryType DiaryType=UserDiaryType.valueOf(userDiaryType);
+
+        jwtProvider.getUserFromJwt()
+
+
+
+
+    }*/
 }

@@ -155,7 +155,7 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(encodedKey.getBytes());
     }
 
-    public static Long getUserFromPrincial(Principal principal) {
+    public static Long getUserFromPrincipal(Principal principal) {
         if (isNull(principal)) {
             throw new CustomException(EMPTY_PRINCIPLE_ERROR);
         }
