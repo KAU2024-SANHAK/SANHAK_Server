@@ -1,4 +1,4 @@
-package org.kau.kkoolbeeServer.global.common.config;
+package org.kau.kkoolbeeServer.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080", "http://localhost:8081", "http://localhost:5173")
+                .allowedOrigins("http://localhost:8080", "http://localhost:8081", "http://localhost:5173","https://www.honeyary-server.o-r.kr","https://honeyary.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
                 .allowCredentials(true)
                 .maxAge(3000);
