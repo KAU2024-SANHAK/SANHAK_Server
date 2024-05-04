@@ -14,6 +14,7 @@ import org.kau.kkoolbeeServer.domain.diary.dto.response.SlowTypeCreateResponseDt
 import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.domain.member.Member;
 import org.kau.kkoolbeeServer.domain.member.service.MemberService;
+
 import org.kau.kkoolbeeServer.global.auth.jwt.JwtProvider;
 import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
@@ -23,10 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -44,11 +42,13 @@ public class DiaryController {
     private DiaryService diaryService;
     private final S3UploaderService s3UploaderService;
     private MemberService memberService;
+    private JwtProvider jwtProvider;
     @Autowired
-    public DiaryController(DiaryService diaryService,S3UploaderService s3UploaderService,MemberService memberService) {
+    public DiaryController(DiaryService diaryService,S3UploaderService s3UploaderService,MemberService memberService,JwtProvider jwtProvider) {
         this.diaryService = diaryService;
         this.s3UploaderService=s3UploaderService;
         this.memberService=memberService;
+        this.jwtProvider=jwtProvider;
 
     }
 
@@ -187,16 +187,19 @@ public class DiaryController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
         }
-    }
-*/
+    }*/
     @PostMapping("/api/diary/create/slow")
-    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(Principal principal,@RequestPart("imageurl")MultipartFile image,
-                                                              @RequestPart("diaryTitle") String diaryTitle,
-                                                              @RequestPart("diaryContent") String diaryContent){
+    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
+                                                              @RequestPart(value = "diaryTitle") String diaryTitle,
+                                                              @RequestPart(value = "diaryContent") String diaryContent){
 
         try {
+            String accessToken = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                accessToken = authHeader.substring(7);
+            }
             String imageUrl = s3UploaderService.upload(image);
-            Long memberId=JwtProvider.getUserFromPrincipal(principal);
+            Long memberId= jwtProvider.getUserFromJwt(accessToken);
             Member member= memberService.findByIdOrThrow(memberId);
             Diary diary = new Diary();
             diary.setTitle(diaryTitle);
@@ -209,10 +212,12 @@ public class DiaryController {
 
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
+            e.printStackTrace();
+
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
         }
     }
-
 
 
 
