@@ -25,9 +25,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<MemberLoginResponseDto>> login(
-        @RequestHeader("Authorization") String code) {
+        @RequestHeader("Authorization") String socialAccessToken) {
 
-        return ResponseEntity.ok(ApiResponse.success(SuccessType.LOGIN_SUCCESS, memberService.login(kakaoLoginService.getKakaoAccessToken(code))));
+        return ResponseEntity.ok(ApiResponse.success(SuccessType.LOGIN_SUCCESS, memberService.login(socialAccessToken)));
     }
 
     @GetMapping("/reissue")
