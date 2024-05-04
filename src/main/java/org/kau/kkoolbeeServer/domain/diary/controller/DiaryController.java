@@ -55,19 +55,19 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-        Long diaryId = diaryContentRequestDto.getDiaryId();
+           Long diaryId = diaryContentRequestDto.getDiaryId();
 
-        Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
+            Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
 
-        if (diaryOptional.isPresent()) {
+            if (diaryOptional.isPresent()) {
 
-            Diary diary = diaryOptional.get();
-            // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
-            AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
-                    diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
-                    diary.getAdvice().getKind_advice()
+                Diary diary = diaryOptional.get();
+                // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
+                AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
+                        diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
+                        diary.getAdvice().getKind_advice()
 
-            );
+                );
 
 
                 DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
@@ -78,13 +78,12 @@ public class DiaryController {
                         diary.getTitle()
                 );
 
-
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
-        } else {
-            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
-            //diary 가 null 일 경우 요청이상함 반환
-        }
+                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
+            } else {
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
+                //diary 가 null 일 경우 요청이상함 반환
+            }
 
     }
    /* @PostMapping("/api/diary/list/calendar")
@@ -105,8 +104,6 @@ public class DiaryController {
         Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
         return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
 
-
-
     @PostMapping("/api/diary/list/calendar")
     public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
         Long memberId= JwtProvider.getUserFromPrincipal(principal);
@@ -115,16 +112,16 @@ public class DiaryController {
         List<Diary> diaries = diaryService.findDiariesByMonthAndMemberId(currentDate, memberId);
 
         if(diaries.isEmpty()){
-            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
-        }
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
+            }
 
-        List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
-                .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
-                .collect(Collectors.toList());
+            List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
+                    .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
+                    .collect(Collectors.toList());
 
-        Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
+            Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
 
 
@@ -171,24 +168,15 @@ public class DiaryController {
 
     }
 
-
    /* @PostMapping("/api/diary/create/slow")
     public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestPart("imageurl")MultipartFile image,
                                                               @RequestPart("diaryTitle") String diaryTitle,
                                                               @RequestPart("diaryContent") String diaryContent){
 
-
         try {
-            String accessToken = null;
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                accessToken = authHeader.substring(7);
-            }
             String imageUrl = s3UploaderService.upload(image);
-            Long memberId= jwtProvider.getUserFromJwt(accessToken);
-            Member member= memberService.findByIdOrThrow(memberId);
             Diary diary = new Diary();
             diary.setTitle(diaryTitle);
-            diary.setMember(member);
             diary.setContent(diaryContent);
             diary.setImageurl(imageUrl);
 
@@ -197,10 +185,7 @@ public class DiaryController {
 
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
         } catch (Exception e) {
-            e.printStackTrace();
-
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
         }
     }*/
     @PostMapping("/api/diary/create/slow")
