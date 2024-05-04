@@ -5,6 +5,7 @@ import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.repository.DiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
@@ -27,16 +28,28 @@ public class DiaryService {
 
 
     }
-    public List<Diary> findDiariesByMonth(LocalDateTime date) {
+   /* public List<Diary> findDiariesByMonth(LocalDateTime date) {
         LocalDateTime startOfMonth = date.withDayOfMonth(1).toLocalDate().atStartOfDay();
         LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
         return diaryRepository.findByWritedAtBetween(startOfMonth, endOfMonth);
+    }*/
+
+    public List<Diary> findDiariesByMonthAndMemberId(LocalDateTime date, Long memberId) {
+        LocalDateTime startOfMonth = date.withDayOfMonth(1).toLocalDate().atStartOfDay();
+        LocalDateTime endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1);
+        return diaryRepository.findByMemberIdAndWritedAtBetween(memberId, startOfMonth, endOfMonth);
     }
 
-    public List<Diary> findDiariesByFeeling(String feeling) {
+
+
+   /* public List<Diary> findDiariesByFeeling(String feeling) {
         return diaryRepository.findByFeeling(Feeling.valueOf(feeling));
     }
-
+*/
+    public List<Diary> findDiariesByMemberIdAndFeeling(Long memberId,String feeling) {
+        return diaryRepository.findByMemberIdAndFeeling(memberId,Feeling.valueOf(feeling));
+    }
+    @Transactional
     public Diary saveDiary(Diary diary){
         return diaryRepository.save(diary);
     }

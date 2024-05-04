@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.kau.kkoolbeeServer.global.auth.redis.RefreshToken;
 import org.kau.kkoolbeeServer.global.auth.redis.TokenRepository;
 import org.kau.kkoolbeeServer.global.common.exception.model.CustomException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,8 @@ import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.*;
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
+    private static final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
+
 
     private static final Long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 1000L * 60 * 24 * 365;  // 액세스 토큰 만료 시간: 1년으로 지정
     private static final Long REFRESH_TOKEN_EXPIRATION_TIME = 60 * 1000L * 2 * 60 * 24 * 365;  // 리프레시 토큰 만료 시간: 2년으로 지정
@@ -136,9 +140,26 @@ public class JwtProvider {
     }
 
     // 토큰에 담겨있는 memberId 획득
-    public Long getUserFromJwt(String token) {
+    /*public Long getUserFromJwt(String token) {
         Claims claims = getBody(token);
         return Long.parseLong(claims.get("memberId").toString());
+    }*/
+
+    public Long getUserFromJwt(String token) {
+        try {
+            logger.info("Token 분석 시작: {}", token);
+            Claims claims = getBody(token);
+            logger.info("Claims 추출 성공");
+
+
+
+            String memberIdStr = claims.get("memberId").toString();
+            logger.info("memberId 추출 성공: {}", memberIdStr);
+            return Long.parseLong(memberIdStr);
+        } catch (Exception e) {
+            logger.error("getUserFromJwt 메소드 에러", e);
+            throw new RuntimeException("JWT 토큰 분석 중 오류 발생", e);
+        }
     }
 
     private Claims getBody(final String token) {
@@ -155,7 +176,7 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(encodedKey.getBytes());
     }
 
-    public static Long getUserFromPrincial(Principal principal) {
+    public static Long getUserFromPrincipal(Principal principal) {
         if (isNull(principal)) {
             throw new CustomException(EMPTY_PRINCIPLE_ERROR);
         }
