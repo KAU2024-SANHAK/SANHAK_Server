@@ -105,31 +105,7 @@ public class DiaryController {
         Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
         return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
 
-    @PostMapping("/api/diary/list/calendar")
-    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
-        Long memberId= JwtProvider.getUserFromPrincipal(principal);
-        LocalDateTime currentDate = requestDto.getCurrentDate();
 
-        List<Diary> diaries = diaryService.findDiariesByMonthAndMemberId(currentDate, memberId);
-
-        if(diaries.isEmpty()){
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
-            }
-
-
-        List<Diary>diaries=diaryService.findDiariesByMonth(currentDate);
-        if(diaries.isEmpty()){
-            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
-        }
-
-        List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
-                .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
-                .collect(Collectors.toList());
-
-        Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
     @PostMapping("/api/diary/list/calendar")
     public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
