@@ -55,35 +55,35 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-           Long diaryId = diaryContentRequestDto.getDiaryId();
+        Long diaryId = diaryContentRequestDto.getDiaryId();
 
-            Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
+        Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
 
-            if (diaryOptional.isPresent()) {
+        if (diaryOptional.isPresent()) {
 
-                Diary diary = diaryOptional.get();
-                // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
-                AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
-                        diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
-                        diary.getAdvice().getKind_advice()
+            Diary diary = diaryOptional.get();
+            // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
+            AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
+                    diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
+                    diary.getAdvice().getKind_advice()
 
-                );
+            );
 
 
-                DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
-                        diary.getContent(),
-                        adviceResponseDto,
-                        diary.getFeeling().toString(),
-                        diary.getImageurl(),
-                        diary.getTitle()
-                );
+            DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
+                    diary.getContent(),
+                    adviceResponseDto,
+                    diary.getFeeling().toString(),
+                    diary.getImageurl(),
+                    diary.getTitle()
+            );
 
-                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
-            } else {
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
-                //diary 가 null 일 경우 요청이상함 반환
-            }
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
+        } else {
+            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
+            //diary 가 null 일 경우 요청이상함 반환
+        }
 
     }
    /* @PostMapping("/api/diary/list/calendar")
@@ -112,16 +112,16 @@ public class DiaryController {
         List<Diary> diaries = diaryService.findDiariesByMonthAndMemberId(currentDate, memberId);
 
         if(diaries.isEmpty()){
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
-            }
+            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
+        }
 
-            List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
-                    .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
-                    .collect(Collectors.toList());
+        List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
+                .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
+                .collect(Collectors.toList());
 
-            Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
+        Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
+        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
 
 
@@ -168,26 +168,26 @@ public class DiaryController {
 
     }
 
-   /* @PostMapping("/api/diary/create/slow")
-    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestPart("imageurl")MultipartFile image,
-                                                              @RequestPart("diaryTitle") String diaryTitle,
-                                                              @RequestPart("diaryContent") String diaryContent){
+    /* @PostMapping("/api/diary/create/slow")
+     public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestPart("imageurl")MultipartFile image,
+                                                               @RequestPart("diaryTitle") String diaryTitle,
+                                                               @RequestPart("diaryContent") String diaryContent){
 
-        try {
-            String imageUrl = s3UploaderService.upload(image);
-            Diary diary = new Diary();
-            diary.setTitle(diaryTitle);
-            diary.setContent(diaryContent);
-            diary.setImageurl(imageUrl);
+         try {
+             String imageUrl = s3UploaderService.upload(image);
+             Diary diary = new Diary();
+             diary.setTitle(diaryTitle);
+             diary.setContent(diaryContent);
+             diary.setImageurl(imageUrl);
 
-            Diary savedDiary=diaryService.saveDiary(diary);
-            SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl());
+             Diary savedDiary=diaryService.saveDiary(diary);
+             SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl());
 
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
-        }
-    }*/
+             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+         } catch (Exception e) {
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,"서버 내부 오류"));
+         }
+     }*/
     @PostMapping("/api/diary/create/slow")
     public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
                                                               @RequestPart(value = "diaryTitle") String diaryTitle,
