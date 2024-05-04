@@ -129,7 +129,7 @@ public class DiaryController {
                 .collect(Collectors.toList());
 
         Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
+        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
     @PostMapping("/api/diary/list/calendar")
     public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
