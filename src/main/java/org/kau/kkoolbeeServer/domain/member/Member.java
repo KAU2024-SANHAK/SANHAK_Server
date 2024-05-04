@@ -54,4 +54,9 @@ public class Member {
     public static Member of(String kakaoId) {
         return new Member(kakaoId);
     }
+
+
+    public void setDiaryType(UserDiaryType userDiaryType) {
+        this.userDiaryType = userDiaryType;
+    }
 }

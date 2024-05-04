@@ -11,8 +11,11 @@ import java.util.List;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary,Long> {
 
-    List<Diary> findByWritedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+    /*List<Diary> findByWritedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);*/
+    List<Diary> findByMemberIdAndWritedAtBetween(Long memberId, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<Diary> findByFeeling(Feeling feeling);
+    /*List<Diary> findByFeeling(Feeling feeling);*/
+
+    List<Diary> findByMemberIdAndFeeling(Long memberId,Feeling feeling);
 
 }
