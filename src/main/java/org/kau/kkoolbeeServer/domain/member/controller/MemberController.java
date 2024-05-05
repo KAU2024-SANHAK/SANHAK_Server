@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.kau.kkoolbeeServer.domain.member.UserDiaryType;
+import org.kau.kkoolbeeServer.domain.member.dto.UserDiaryTypeRequest;
 import org.kau.kkoolbeeServer.domain.member.dto.response.MemberLoginResponseDto;
 import org.kau.kkoolbeeServer.domain.member.service.MemberService;
 import org.kau.kkoolbeeServer.global.auth.fegin.kakao.KakaoLoginService;
@@ -51,11 +52,17 @@ public class MemberController {
     }
 
     @PostMapping("/member/character")
-    public ResponseEntity<ApiResponse<?>> diaryType(Principal principal,@RequestBody String userDiaryType){
+    public ResponseEntity<ApiResponse<?>> diaryType(@RequestHeader(value = "Authorization") String authHeader, @RequestBody UserDiaryTypeRequest request){
 
-        Long memberId=JwtProvider.getUserFromPrincipal(principal);
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
 
-        UserDiaryType diaryType=UserDiaryType.valueOf(userDiaryType);
+        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+
+
+        UserDiaryType diaryType=UserDiaryType.valueOf(request.getUserDiaryType());
         memberService.setUserDiaryType(memberId,diaryType);
 
         return ResponseEntity.ok(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
