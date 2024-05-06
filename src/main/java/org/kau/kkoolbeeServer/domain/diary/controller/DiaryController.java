@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
+import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.CalenderDiaryResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
@@ -149,10 +150,17 @@ public class DiaryController {
     }*/
 
     @PostMapping("/api/diary/list/feeling")
-    public ResponseEntity<ApiResponse<?>> getDiariesByFeeling( Principal principal,@RequestBody FeelingListRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<?>> getDiariesByFeeling( @RequestHeader(value = "Authorization") String authHeader,@RequestBody FeelingListRequestDto requestDto) {
 
-        Long memberId=JwtProvider.getUserFromPrincipal(principal);
-        List<Diary> diaries = diaryService.findDiariesByMemberIdAndFeeling(memberId,requestDto.getFeeling());
+
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
+
+        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+        Feeling feeling=Feeling.valueOf(requestDto.getFeeling());
+        List<Diary> diaries = diaryService.findDiariesByMemberIdAndFeeling(memberId,feeling);
 
         if (diaries.isEmpty()) {
             return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())

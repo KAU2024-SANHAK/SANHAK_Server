@@ -46,8 +46,8 @@ public class DiaryService {
         return diaryRepository.findByFeeling(Feeling.valueOf(feeling));
     }
 */
-    public List<Diary> findDiariesByMemberIdAndFeeling(Long memberId,String feeling) {
-        return diaryRepository.findByMemberIdAndFeeling(memberId,Feeling.valueOf(feeling));
+    public List<Diary> findDiariesByMemberIdAndFeeling(Long memberId,Feeling feeling) {
+        return diaryRepository.findByMemberIdAndFeeling(memberId,feeling);
     }
     @Transactional
     public Diary saveDiary(Diary diary){
