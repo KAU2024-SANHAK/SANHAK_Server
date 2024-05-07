@@ -40,6 +40,7 @@ public enum ErrorType {
      * 404 NOT FOUND
      */
     NOT_FOUND_MEMBER_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+    ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청하신 Diary에 맞는 Advice가 없습니다."),
     NOT_FOUND_REFRESH_TOKEN_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 리프레시 토큰입니다."),
 
     /**
