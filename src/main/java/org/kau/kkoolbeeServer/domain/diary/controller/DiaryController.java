@@ -20,6 +20,7 @@ import org.kau.kkoolbeeServer.global.auth.jwt.JwtProvider;
 import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
+import org.kau.kkoolbeeServer.global.common.exception.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,15 +55,22 @@ public class DiaryController {
     }
 
     @PostMapping("/api/diary/content")
-    public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
+    public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
-           Long diaryId = diaryContentRequestDto.getDiaryId();
+
+            Long diaryId = diaryContentRequestDto.getDiaryId();
 
             Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
 
+
             if (diaryOptional.isPresent()) {
 
+
                 Diary diary = diaryOptional.get();
+                if(diary.getAdvice()==null){
+                    throw new CustomException(ErrorType.ADVICE_NOT_FOUND);
+                }
+
                 // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
                 AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
                         diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
@@ -72,6 +80,8 @@ public class DiaryController {
 
 
                 DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
+                        diary.getId(),
+                        diary.getWritedAt(),
                         diary.getContent(),
                         adviceResponseDto,
                         diary.getFeeling().toString(),
