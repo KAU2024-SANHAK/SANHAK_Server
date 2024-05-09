@@ -3,6 +3,10 @@ spring:
     activate:
       on-profile: local
     import: optional:application-secret.properties
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 20MB
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
