@@ -215,12 +215,14 @@ public class DiaryController {
                     if (authHeader != null && authHeader.startsWith("Bearer ")) {
                         accessToken = authHeader.substring(7);
                     }
+
                     String imageUrl=null;
 
                     if(image!=null && !image.isEmpty() ){
                         imageUrl = s3UploaderService.upload(image);
 
                     }
+
 
                     Long memberId= jwtProvider.getUserFromJwt(accessToken);
                     Member member= memberService.findByIdOrThrow(memberId);
@@ -231,7 +233,9 @@ public class DiaryController {
                     System.out.println(LocalDateTime.now());
                     diary.setWritedAt(LocalDateTime.now()); //이부분추가
                     System.out.println(diary.getWritedAt());
+
                     diary.setImageurl(imageUrl);
+
 
             Diary savedDiary=diaryService.saveDiary(diary);
             SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl());
