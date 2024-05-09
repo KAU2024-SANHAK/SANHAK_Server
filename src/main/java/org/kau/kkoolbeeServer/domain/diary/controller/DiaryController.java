@@ -231,7 +231,7 @@ public class DiaryController {
             diary.setTitle(diaryTitle);
             diary.setMember(member);
             diary.setContent(diaryContent);
-            diary.setWritedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul"))); //이부분추가
+            diary.setWritedAt(LocalDateTime.now()); //이부분추가
             diary.setImageurl(imageUrl);
 
             Diary savedDiary=diaryService.saveDiary(diary);
