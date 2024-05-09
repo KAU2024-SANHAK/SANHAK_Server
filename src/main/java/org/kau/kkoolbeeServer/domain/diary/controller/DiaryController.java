@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,8 +117,14 @@ public class DiaryController {
         return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
 
     @PostMapping("/api/diary/list/calendar")
-    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
-        Long memberId= JwtProvider.getUserFromPrincipal(principal);
+    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(@RequestHeader("Authorization") String authHeader,@RequestBody CurrentDateRequestDto requestDto){
+
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
+        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+
         LocalDateTime currentDate = requestDto.getCurrentDate();
 
         List<Diary> diaries = diaryService.findDiariesByMonthAndMemberId(currentDate, memberId);
@@ -168,6 +175,7 @@ public class DiaryController {
             accessToken = authHeader.substring(7);
         }
 
+
         Long memberId= jwtProvider.getUserFromJwt(accessToken);
         Feeling feeling=Feeling.valueOf(requestDto.getFeeling());
         List<Diary> diaries = diaryService.findDiariesByMemberIdAndFeeling(memberId,feeling);
@@ -207,22 +215,25 @@ public class DiaryController {
         }
     }*/
     @PostMapping("/api/diary/create/slow")
-    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
-                                                              @RequestPart(value = "diaryTitle") String diaryTitle,
-                                                              @RequestPart(value = "diaryContent") String diaryContent){
+            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
+                    @RequestPart(value = "diaryTitle") String diaryTitle,
+                    @RequestPart(value = "diaryContent") String diaryContent){
 
-        try {
-            String accessToken = null;
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                accessToken = authHeader.substring(7);
-            }
-            String imageUrl = s3UploaderService.upload(image);
-            Long memberId= jwtProvider.getUserFromJwt(accessToken);
-            Member member= memberService.findByIdOrThrow(memberId);
-            Diary diary = new Diary();
-            diary.setTitle(diaryTitle);
-            diary.setMember(member);
-            diary.setContent(diaryContent);
+                try {
+                    String accessToken = null;
+                    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                        accessToken = authHeader.substring(7);
+                    }
+                    String imageUrl = s3UploaderService.upload(image);
+                    Long memberId= jwtProvider.getUserFromJwt(accessToken);
+                    Member member= memberService.findByIdOrThrow(memberId);
+                    Diary diary = new Diary();
+                    diary.setTitle(diaryTitle);
+                    diary.setMember(member);
+                    diary.setContent(diaryContent);
+                    System.out.println(LocalDateTime.now());
+                    diary.setWritedAt(LocalDateTime.now()); //이부분추가
+                    System.out.println(diary.getWritedAt());
             diary.setImageurl(imageUrl);
 
             Diary savedDiary=diaryService.saveDiary(diary);
