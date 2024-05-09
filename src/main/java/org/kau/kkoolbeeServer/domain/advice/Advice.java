@@ -15,10 +15,10 @@ public class Advice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     String kind_advice;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     String spicy_advice;
 
     public Advice(String kind_advice, String spicy_advice) {
