@@ -68,24 +68,15 @@ public class DiaryController {
 
 
                 Diary diary = diaryOptional.get();
-                if(diary.getAdvice()==null){
-                    throw new CustomException(ErrorType.ADVICE_NOT_FOUND);
-                }
-
-                // Diary의 Advice 정보를 AdviceResponseDto 객체로 변환
-                AdviceResponseDto adviceResponseDto = new AdviceResponseDto(
-                        diary.getAdvice().getSpicy_advice(),    //여기서 null이 나오면 ?
-                        diary.getAdvice().getKind_advice()
-
-                );
-
-
+                AdviceResponseDto adviceResponseDto=AdviceResponseDto.fromAdviceOrNull(diary.getAdvice());
+                //feeling이 null인경우 대비
+                String feeling = diary.getFeeling() != null ? diary.getFeeling().toString() : null;
                 DiaryContentResponseDto responseDto = new DiaryContentResponseDto(
                         diary.getId(),
                         diary.getWritedAt(),
                         diary.getContent(),
                         adviceResponseDto,
-                        diary.getFeeling().toString(),
+                        feeling,
                         diary.getImageurl(),
                         diary.getTitle()
                 );
