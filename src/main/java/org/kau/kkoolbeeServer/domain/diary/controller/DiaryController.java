@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -116,8 +117,14 @@ public class DiaryController {
         return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
 
     @PostMapping("/api/diary/list/calendar")
-    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(Principal principal,@RequestBody CurrentDateRequestDto requestDto){
-        Long memberId= JwtProvider.getUserFromPrincipal(principal);
+    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(@RequestHeader("Authorization") String authHeader,@RequestBody CurrentDateRequestDto requestDto){
+
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
+        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+
         LocalDateTime currentDate = requestDto.getCurrentDate();
 
         List<Diary> diaries = diaryService.findDiariesByMonthAndMemberId(currentDate, memberId);
@@ -167,6 +174,7 @@ public class DiaryController {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             accessToken = authHeader.substring(7);
         }
+
 
         Long memberId= jwtProvider.getUserFromJwt(accessToken);
         Feeling feeling=Feeling.valueOf(requestDto.getFeeling());
@@ -223,6 +231,7 @@ public class DiaryController {
             diary.setTitle(diaryTitle);
             diary.setMember(member);
             diary.setContent(diaryContent);
+            diary.setWritedAt(LocalDateTime.now(ZoneId.of("Asia/Seoul"))); //이부분추가
             diary.setImageurl(imageUrl);
 
             Diary savedDiary=diaryService.saveDiary(diary);
