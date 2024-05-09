@@ -215,23 +215,25 @@ public class DiaryController {
         }
     }*/
     @PostMapping("/api/diary/create/slow")
-    public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
-                                                              @RequestPart(value = "diaryTitle") String diaryTitle,
-                                                              @RequestPart(value = "diaryContent") String diaryContent){
+            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
+                    @RequestPart(value = "diaryTitle") String diaryTitle,
+                    @RequestPart(value = "diaryContent") String diaryContent){
 
-        try {
-            String accessToken = null;
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                accessToken = authHeader.substring(7);
-            }
-            String imageUrl = s3UploaderService.upload(image);
-            Long memberId= jwtProvider.getUserFromJwt(accessToken);
-            Member member= memberService.findByIdOrThrow(memberId);
-            Diary diary = new Diary();
-            diary.setTitle(diaryTitle);
-            diary.setMember(member);
-            diary.setContent(diaryContent);
-            diary.setWritedAt(LocalDateTime.now()); //이부분추가
+                try {
+                    String accessToken = null;
+                    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                        accessToken = authHeader.substring(7);
+                    }
+                    String imageUrl = s3UploaderService.upload(image);
+                    Long memberId= jwtProvider.getUserFromJwt(accessToken);
+                    Member member= memberService.findByIdOrThrow(memberId);
+                    Diary diary = new Diary();
+                    diary.setTitle(diaryTitle);
+                    diary.setMember(member);
+                    diary.setContent(diaryContent);
+                    System.out.println(LocalDateTime.now());
+                    diary.setWritedAt(LocalDateTime.now()); //이부분추가
+                    System.out.println(diary.getWritedAt());
             diary.setImageurl(imageUrl);
 
             Diary savedDiary=diaryService.saveDiary(diary);
