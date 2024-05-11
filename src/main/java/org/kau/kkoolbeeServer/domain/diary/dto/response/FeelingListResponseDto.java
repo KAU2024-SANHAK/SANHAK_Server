@@ -13,5 +13,6 @@ public class FeelingListResponseDto {
     private Long diaryId;
     private LocalDateTime createdDate;
     private String diaryTitle;
+    private String imageUrl;
 
 }

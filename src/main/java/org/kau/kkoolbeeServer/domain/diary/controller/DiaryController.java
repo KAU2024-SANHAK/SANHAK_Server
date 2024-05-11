@@ -177,7 +177,7 @@ public class DiaryController {
         }
 
         List<FeelingListResponseDto> feelingList = diaries.stream()
-                .map(diary -> new FeelingListResponseDto(diary.getId(), diary.getWritedAt(), diary.getTitle()))
+                .map(diary -> new FeelingListResponseDto(diary.getId(), diary.getWritedAt(), diary.getTitle(), diary.getImageurl()))
                 .collect(Collectors.toList());
 
         Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
