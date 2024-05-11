@@ -13,6 +13,7 @@ public class CalenderDiaryResponseDto {
     private Long diaryId;
     private String diaryTitle;
     private LocalDateTime createdDate;
+    private String imageUrl;
 
 
 }
