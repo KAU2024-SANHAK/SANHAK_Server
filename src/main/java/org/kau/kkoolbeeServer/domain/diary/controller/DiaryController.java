@@ -126,7 +126,7 @@ public class DiaryController {
             }
 
             List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
-                    .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
+                    .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt(), diary.getImageurl()))
                     .collect(Collectors.toList());
 
             Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
