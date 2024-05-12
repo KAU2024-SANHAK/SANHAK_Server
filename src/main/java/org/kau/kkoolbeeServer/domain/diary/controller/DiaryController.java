@@ -55,6 +55,7 @@ public class DiaryController {
 
     }
 
+
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
@@ -165,6 +166,10 @@ public class DiaryController {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             accessToken = authHeader.substring(7);
         }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+        }
 
 
         Long memberId= jwtProvider.getUserFromJwt(accessToken);
@@ -214,6 +219,10 @@ public class DiaryController {
                     String accessToken = null;
                     if (authHeader != null && authHeader.startsWith("Bearer ")) {
                         accessToken = authHeader.substring(7);
+                    }
+                    else{
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
                     }
 
                     String imageUrl=null;
