@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -239,9 +240,9 @@ public class DiaryController {
                     diary.setTitle(diaryTitle);
                     diary.setMember(member);
                     diary.setContent(diaryContent);
-                    System.out.println(LocalDateTime.now());
-                    diary.setWritedAt(LocalDateTime.now()); //이부분추가
-                    System.out.println(diary.getWritedAt());
+                    ZonedDateTime kstNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+                    LocalDateTime now = kstNow.toLocalDateTime();
+                    diary.setWritedAt(now);
 
                     diary.setImageurl(imageUrl);
 
