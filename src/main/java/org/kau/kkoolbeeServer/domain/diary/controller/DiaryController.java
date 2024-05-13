@@ -226,6 +226,7 @@ public class DiaryController {
 
                     }
 
+
                     String imageUrl=null;
 
                     if(image!=null && !image.isEmpty() ){
@@ -243,7 +244,6 @@ public class DiaryController {
                     ZonedDateTime kstNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
                     LocalDateTime now = kstNow.toLocalDateTime();
                     diary.setWritedAt(now);
-
                     diary.setImageurl(imageUrl);
 
 
