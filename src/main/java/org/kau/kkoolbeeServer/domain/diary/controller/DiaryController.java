@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,6 +55,7 @@ public class DiaryController {
         this.jwtProvider=jwtProvider;
 
     }
+
 
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
@@ -165,6 +167,10 @@ public class DiaryController {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             accessToken = authHeader.substring(7);
         }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+        }
 
 
         Long memberId= jwtProvider.getUserFromJwt(accessToken);
@@ -215,6 +221,11 @@ public class DiaryController {
                     if (authHeader != null && authHeader.startsWith("Bearer ")) {
                         accessToken = authHeader.substring(7);
                     }
+                    else{
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+                    }
+
 
                     String imageUrl=null;
 
@@ -230,10 +241,9 @@ public class DiaryController {
                     diary.setTitle(diaryTitle);
                     diary.setMember(member);
                     diary.setContent(diaryContent);
-                    System.out.println(LocalDateTime.now());
-                    diary.setWritedAt(LocalDateTime.now()); //이부분추가
-                    System.out.println(diary.getWritedAt());
-
+                    ZonedDateTime kstNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+                    LocalDateTime now = kstNow.toLocalDateTime();
+                    diary.setWritedAt(now);
                     diary.setImageurl(imageUrl);
 
 
