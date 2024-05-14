@@ -212,7 +212,7 @@ public class DiaryController {
         }
     }*/
     @PostMapping("/api/diary/create/slow")
-            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl")MultipartFile image,
+            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl",required = false)MultipartFile image,
                     @RequestPart(value = "diaryTitle") String diaryTitle,
                     @RequestPart(value = "diaryContent") String diaryContent){
 
