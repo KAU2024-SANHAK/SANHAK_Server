@@ -18,6 +18,8 @@ import org.kau.kkoolbeeServer.global.common.dto.ApiResponse;
 import org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType;
 import org.kau.kkoolbeeServer.global.common.dto.enums.SuccessType;
 import org.kau.kkoolbeeServer.global.common.exception.model.CustomException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class DiaryController {
+    private static final Logger logger = LoggerFactory.getLogger(DiaryController.class);
 
 
     private DiaryService diaryService;
@@ -265,6 +268,12 @@ public class DiaryController {
             @RequestPart(value = "diaryTitle") String diaryTitle,
             @RequestPart(value = "diaryContent") String diaryContent) {
 
+        logger.info("Authorization Header: {}", authHeader);
+        logger.info("Received diaryId: {}", diaryId);
+        logger.info("Received diaryTitle: {}", diaryTitle);
+        logger.info("Received diaryContent: {}", diaryContent);
+
+
 
         try{
 
@@ -300,6 +309,8 @@ public class DiaryController {
 
         }
         catch (Exception e){
+
+            logger.error("An error occurred while updating diary", e);
             e.printStackTrace();
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
