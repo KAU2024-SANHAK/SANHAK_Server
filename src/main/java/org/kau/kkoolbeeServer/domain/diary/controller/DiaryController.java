@@ -6,12 +6,9 @@ import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.response.CalenderDiaryResponseDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.*;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryContentResponseDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.response.FeelingListResponseDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.response.SlowTypeCreateResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.domain.member.Member;
 import org.kau.kkoolbeeServer.domain.member.service.MemberService;
@@ -36,6 +33,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -257,6 +255,59 @@ public class DiaryController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
         }
+    }
+
+    @PatchMapping("/api/diary/update")
+    public ResponseEntity<?> updateDiary(
+            @RequestHeader(value = "Authorization") String authHeader,
+            @RequestPart(value = "imageUrl", required = false) MultipartFile imageFile,
+            @RequestPart(value="diaryId") Long diaryId,
+            @RequestPart(value = "diaryTitle") String diaryTitle,
+            @RequestPart(value = "diaryContent") String diaryContent) {
+
+
+        try{
+
+            String accessToken = null;
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                accessToken = authHeader.substring(7);
+                Long memberID= jwtProvider.getUserFromJwt(accessToken);
+                Diary diary=diaryService.findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+                if(diary.getMember().getId()!=memberID){
+
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
+                }
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+            }
+            String imageUrl=null;
+            if (imageFile!=null && !imageFile.isEmpty()){
+                imageUrl=s3UploaderService.upload(imageFile);
+
+                UpdateDiaryResponseDto responseDto=diaryService.updateDiary(diaryId,diaryContent,diaryTitle,imageUrl);
+                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+
+            }
+            else{
+                UpdateDiaryResponseDto responseDto=diaryService.updateDiaryWithoutImage(diaryId,diaryContent,diaryTitle);
+                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+
+
+            }
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
+        }
+
+
+
+
     }
 
 
