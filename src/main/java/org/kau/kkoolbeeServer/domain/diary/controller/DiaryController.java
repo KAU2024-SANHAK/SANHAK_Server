@@ -267,6 +267,7 @@ public class DiaryController {
             @RequestPart(value="diaryId") Long diaryId,
             @RequestPart(value = "diaryTitle") String diaryTitle,
             @RequestPart(value = "diaryContent") String diaryContent) {
+
         logger.info("Authorization Header: {}", authHeader);
         logger.info("Received diaryId: {}", diaryId);
         logger.info("Received diaryTitle: {}", diaryTitle);
@@ -308,6 +309,7 @@ public class DiaryController {
 
         }
         catch (Exception e){
+
             logger.error("An error occurred while updating diary", e);
             e.printStackTrace();
 
