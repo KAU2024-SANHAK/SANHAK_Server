@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary.service;
 
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.UpdateDiaryResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.repository.DiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -52,6 +56,54 @@ public class DiaryService {
     @Transactional
     public Diary saveDiary(Diary diary){
         return diaryRepository.save(diary);
+    }
+
+    public UpdateDiaryResponseDto updateDiary(Long diaryId,String diaryContent,String diaryTitle,String imageUrl){
+        Diary diary=findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        diary.setImageurl(imageUrl);
+        if(!diary.getContent().equals(diaryContent)){
+            diary.setFeeling(null);
+            diary.setAdvice(null);
+            diary.setContent(diaryContent);
+        }
+        if(diary.getTitle()!=diaryTitle){
+            diary.setTitle(diaryTitle);
+        }
+        ZonedDateTime kstNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime now = kstNow.toLocalDateTime();
+        diary.setWritedAt(now);
+
+
+        Diary savedDiary=diaryRepository.save(diary);
+        return new UpdateDiaryResponseDto(diaryId,savedDiary.getContent(),savedDiary.getTitle(),
+                savedDiary.getImageurl());
+
+
+
+
+    }
+
+    public UpdateDiaryResponseDto updateDiaryWithoutImage(Long diaryId,String diaryContent,String diaryTitle){
+        Diary diary=findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        if(!diary.getContent().equals(diaryContent)){
+            diary.setFeeling(null);
+            diary.setAdvice(null);
+            diary.setContent(diaryContent);
+        }
+        if(diary.getTitle()!=diaryTitle){
+            diary.setTitle(diaryTitle);
+        }
+
+        ZonedDateTime kstNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime now = kstNow.toLocalDateTime();
+        diary.setWritedAt(now);
+        Diary savedDiary=diaryRepository.save(diary);
+        return new UpdateDiaryResponseDto(diaryId,savedDiary.getContent(),savedDiary.getTitle(),
+                savedDiary.getImageurl());
+
+
+
+
     }
 
 
