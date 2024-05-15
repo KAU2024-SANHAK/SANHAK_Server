@@ -1,5 +1,6 @@
 package org.kau.kkoolbeeServer.domain.diary.service;
 
+import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.UpdateDiaryResponseDto;
@@ -20,10 +21,12 @@ import java.util.Optional;
 public class DiaryService {
 
     private DiaryRepository diaryRepository;
+    private S3UploaderService s3UploaderService;
 
     @Autowired
-    public DiaryService(DiaryRepository diaryRepository) {
+    public DiaryService(DiaryRepository diaryRepository,S3UploaderService s3UploaderService) {
         this.diaryRepository = diaryRepository;
+        this.s3UploaderService=s3UploaderService;
     }
 
     public Optional<Diary> findDiaryById(Long diary_id){
@@ -60,6 +63,10 @@ public class DiaryService {
 
     public UpdateDiaryResponseDto updateDiary(Long diaryId,String diaryContent,String diaryTitle,String imageUrl){
         Diary diary=findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        if(diary.getImageurl()!=null){
+            s3UploaderService.deleteFileFromS3(diary.getImageurl());
+
+        }
         diary.setImageurl(imageUrl);
         if(!diary.getContent().equals(diaryContent)){
             diary.setFeeling(null);
