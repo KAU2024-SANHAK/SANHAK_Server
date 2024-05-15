@@ -5,6 +5,7 @@ import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
+import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryUpdateRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.*;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
@@ -260,7 +261,7 @@ public class DiaryController {
         }
     }
 
-    @PatchMapping("/api/diary/update")
+/*    @PatchMapping("/api/diary/update")
     public ResponseEntity<?> updateDiary(
             @RequestHeader(value = "Authorization") String authHeader,
             @RequestPart(value = "imageUrl", required = false) MultipartFile imageFile,
@@ -319,7 +320,63 @@ public class DiaryController {
 
 
 
+    }*/
+@PatchMapping("/api/diary/update")
+public ResponseEntity<?> updateDiary(
+        @RequestHeader(value = "Authorization") String authHeader,
+        @ModelAttribute DiaryUpdateRequestDto requestDto ){
+        Long diaryId= requestDto.getDiaryId();
+        MultipartFile imageFile= requestDto.getImageUrl();
+        String diaryTitle= requestDto.getDiaryTitle();
+        String diaryContent= requestDto.getDiaryContent();
+
+
+
+    try{
+
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+            Long memberID= jwtProvider.getUserFromJwt(accessToken);
+            Diary diary=diaryService.findDiaryById(requestDto.getDiaryId()).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+            if(diary.getMember().getId()!=memberID){
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
+            }
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+        }
+        String imageUrl=null;
+        if (imageFile!=null && !imageFile.isEmpty()){
+
+            imageUrl=s3UploaderService.upload(imageFile);
+
+            UpdateDiaryResponseDto responseDto=diaryService.updateDiary(diaryId,diaryContent,diaryTitle,imageUrl);
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+
+        }
+        else{
+            UpdateDiaryResponseDto responseDto=diaryService.updateDiaryWithoutImage(diaryId,diaryContent,diaryTitle);
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+
+
+        }
+
+
     }
+    catch (Exception e){
+        logger.error("An error occurred while updating diary", e);
+        e.printStackTrace();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
+    }
+
+
+
+
+}
 
 
 
