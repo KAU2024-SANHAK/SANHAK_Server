@@ -43,4 +43,12 @@ public class S3UploaderService {
         }
         return convertedFile;
     }
+    public void deleteFileFromS3(String fileUrl) {
+        // URL에서 파일 이름 추출
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+
+        // 파일 삭제
+        amazonS3Client.deleteObject(bucketName, fileName);
+
+    }
 }
