@@ -6,6 +6,7 @@ import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.UpdateDiaryResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.repository.DiaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,6 +110,14 @@ public class DiaryService {
         return new UpdateDiaryResponseDto(diaryId,savedDiary.getContent(),savedDiary.getTitle(),
                 savedDiary.getImageurl());
 
+
+
+
+    }
+
+    public void deleteDiary(Long diaryId){
+        Diary diary=findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException());
+        diaryRepository.delete(diary);
 
 
 
