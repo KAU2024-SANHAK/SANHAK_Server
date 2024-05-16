@@ -5,11 +5,8 @@ import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
-import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryUpdateRequestDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.request.FeelingListRequestDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.request.*;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.*;
-import org.kau.kkoolbeeServer.domain.diary.dto.request.CurrentDateRequestDto;
-import org.kau.kkoolbeeServer.domain.diary.dto.request.DiaryContentRequestDto;
 import org.kau.kkoolbeeServer.domain.diary.service.DiaryService;
 import org.kau.kkoolbeeServer.domain.member.Member;
 import org.kau.kkoolbeeServer.domain.member.service.MemberService;
@@ -214,7 +211,7 @@ public class DiaryController {
         }
     }*/
     @PostMapping("/api/diary/create/slow")
-            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageurl",required = false)MultipartFile image,
+            public ResponseEntity<ApiResponse<?>> createSlowTypeDiary(@RequestHeader(value = "Authorization") String authHeader, @RequestPart(value = "imageUrl",required = false)MultipartFile image,
                     @RequestPart(value = "diaryTitle") String diaryTitle,
                     @RequestPart(value = "diaryContent") String diaryContent){
 
@@ -372,6 +369,34 @@ public ResponseEntity<?> updateDiary(
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
     }
+
+
+
+
+}
+
+@DeleteMapping("api/diary/delete")
+    public ResponseEntity<?>deleteDiary(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryDeleteRequestDto diaryDeleteRequestDto){
+    String accessToken = null;
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        accessToken = authHeader.substring(7);
+        Long memberID= jwtProvider.getUserFromJwt(accessToken);
+        Diary diary=diaryService.findDiaryById(diaryDeleteRequestDto.getDiaryId()).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        if(diary.getMember().getId()!=memberID){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
+        }
+    }
+    else{
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+    }
+    diaryService.deleteDiary(diaryDeleteRequestDto.getDiaryId());
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
+
+
+
+
 
 
 

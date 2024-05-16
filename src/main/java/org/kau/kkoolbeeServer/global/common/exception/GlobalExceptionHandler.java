@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.INTERNAL_SERVER_ERROR;
 import static org.kau.kkoolbeeServer.global.common.dto.enums.ErrorType.REQUEST_VALIDATION_ERROR;
@@ -103,6 +104,16 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error occurred", e);
         return ApiResponse.error(REQUEST_VALIDATION_ERROR, "잘못된 요청 형식입니다.");
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ApiResponse<?> handleNoSuchElementException(NoSuchElementException e) {
+        // 로그 기록, 오류 메시지 생성 및 기타 필요한 처리
+        log.error("Unexpected error occurred", e);
+        return ApiResponse.error(REQUEST_VALIDATION_ERROR, "해당 Id의 일기는 이미 존재하지 않습니다.");
+    }
+
+
 
     //이부분추가
 
