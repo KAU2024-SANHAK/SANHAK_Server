@@ -13,5 +13,5 @@ public class SlowTypeCreateResponseDto {
     private Long diaryId;
     private String diaryContent;
     private String diaryTitle;
-    private String imageurl;
+    private String imageUrl;
 }
