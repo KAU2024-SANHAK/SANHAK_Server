@@ -67,6 +67,7 @@ public class DiaryService {
             s3UploaderService.deleteFileFromS3(diary.getImageurl());
 
         }*/
+
         diary.setImageurl(imageUrl);
         if(!diary.getContent().equals(diaryContent)){
             diary.setFeeling(null);
