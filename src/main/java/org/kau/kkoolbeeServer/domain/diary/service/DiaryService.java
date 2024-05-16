@@ -63,10 +63,10 @@ public class DiaryService {
 
     public UpdateDiaryResponseDto updateDiary(Long diaryId,String diaryContent,String diaryTitle,String imageUrl){
         Diary diary=findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
-        if(diary.getImageurl()!=null){
+       /* if(diary.getImageurl()!=null){
             s3UploaderService.deleteFileFromS3(diary.getImageurl());
 
-        }
+        }*/
         diary.setImageurl(imageUrl);
         if(!diary.getContent().equals(diaryContent)){
             diary.setFeeling(null);
