@@ -18,4 +18,5 @@ public class SlowTypeCreateResponseDto {
     private String imageUrl;
     private LocalDateTime createdDate;
 
+
 }
