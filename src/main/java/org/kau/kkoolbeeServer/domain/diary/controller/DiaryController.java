@@ -247,7 +247,7 @@ public class DiaryController {
 
 
             Diary savedDiary=diaryService.saveDiary(diary);
-            SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl());
+            SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl(),diary.getWritedAt());
 
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
         } catch (Exception e) {
