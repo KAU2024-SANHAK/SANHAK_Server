@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -50,12 +51,35 @@ public class S3UploaderService {
         return amazonS3Client.getUrl(bucketName, fileName).toString();
     }
 
+    public String uploadFile(File file) throws IOException, NoSuchAlgorithmException {
+        String fileHash = calculateFileHash(file);
+        String fileName = fileHash + "-" + file.getName();
+
+        if (!amazonS3Client.doesObjectExist(bucketName, fileName)) {
+            amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
+        }
+
+        return amazonS3Client.getUrl(bucketName, fileName).toString();
+
+    }
+
     private String calculateFileHash(MultipartFile file) throws IOException, NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] fileBytes = file.getBytes();
         byte[] hash = digest.digest(fileBytes);
         return Hex.encodeHexString(hash);
     }
+
+    private String calculateFileHash(File file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] fileBytes = new byte[(int) file.length()];
+            fis.read(fileBytes);
+            byte[] hash = digest.digest(fileBytes);
+            return Hex.encodeHexString(hash);
+        }
+    }
+
 
 
 

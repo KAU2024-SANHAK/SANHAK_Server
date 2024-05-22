@@ -25,3 +25,5 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: error
+openai:
+  api.key: ${API_KEY}
