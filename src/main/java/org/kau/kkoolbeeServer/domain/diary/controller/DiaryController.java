@@ -1,5 +1,7 @@
 package org.kau.kkoolbeeServer.domain.diary.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
@@ -37,6 +39,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @RestController
 public class DiaryController {
     private static final Logger logger = LoggerFactory.getLogger(DiaryController.class);
@@ -59,7 +62,20 @@ public class DiaryController {
     @PostMapping("/api/diary/content")
     public ResponseEntity<ApiResponse<?>> getDiaryContents(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryContentRequestDto diaryContentRequestDto) {
 
+            try{
+                Long memberId=extractMemberIdFromRequestHeader(authHeader);
 
+            }
+            catch(IllegalArgumentException e){
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+
+            }
+            catch(RuntimeException e){
+                e.printStackTrace();
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+            }
             Long diaryId = diaryContentRequestDto.getDiaryId();
 
             Optional<Diary> diaryOptional = diaryService.findDiaryById(diaryId);
@@ -85,37 +101,17 @@ public class DiaryController {
                 return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseDto));
             } else {
                 return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR));
+                        .body(ApiResponse.error(ErrorType.NO_DIARY));
                 //diary 가 null 일 경우 요청이상함 반환
             }
 
     }
-   /* @PostMapping("/api/diary/list/calendar")
-    public ResponseEntity<ApiResponse<?>> getDiariesByMonth(@RequestBody CurrentDateRequestDto requestDto){
-        LocalDateTime currentDate = requestDto.getCurrentDate();
-
-
-        List<Diary>diaries=diaryService.findDiariesByMonth(currentDate);
-        if(diaries.isEmpty()){
-            return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                    .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 월에 대한 일기가 존재하지 않습니다."));
-        }
-
-        List<CalenderDiaryResponseDto> diaryDtos=diaries.stream()
-                .map(diary -> new CalenderDiaryResponseDto(diary.getId(), diary.getTitle(), diary.getWritedAt()))
-                .collect(Collectors.toList());
-
-        Map<String,List<CalenderDiaryResponseDto>> responseMap= Map.of("monthList",diaryDtos);
-        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));*/
 
     @PostMapping("/api/diary/list/calendar")
     public ResponseEntity<ApiResponse<?>> getDiariesByMonth(@RequestHeader("Authorization") String authHeader,@RequestBody CurrentDateRequestDto requestDto){
 
-        String accessToken = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            accessToken = authHeader.substring(7);
-        }
-        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+
+        Long memberId= extractMemberIdFromRequestHeader(authHeader);
 
         LocalDateTime currentDate = requestDto.getCurrentDate();
 
@@ -134,45 +130,14 @@ public class DiaryController {
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
 
 
-
-
     }
-
-    /*@PostMapping("/api/diary/list/feeling")
-    public ResponseEntity<ApiResponse<?>> getDiariesByFeeling( @RequestBody FeelingListRequestDto requestDto) {
-
-
-            List<Diary> diaries = diaryService.findDiariesByFeeling(requestDto.getFeeling());
-
-            if (diaries.isEmpty()) {
-                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
-                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 감정에 대한 일기가 존재하지 않습니다."));
-            }
-
-            List<FeelingListResponseDto> feelingList = diaries.stream()
-                    .map(diary -> new FeelingListResponseDto(diary.getId(), diary.getWritedAt(), diary.getTitle()))
-                    .collect(Collectors.toList());
-
-            Map<String, List<FeelingListResponseDto>> responseMap = Map.of("feelingList", feelingList);
-            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED, responseMap));
-
-    }*/
 
     @PostMapping("/api/diary/list/feeling")
     public ResponseEntity<ApiResponse<?>> getDiariesByFeeling( @RequestHeader(value = "Authorization") String authHeader,@RequestBody FeelingListRequestDto requestDto) {
 
 
-        String accessToken = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            accessToken = authHeader.substring(7);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
 
-        }
-
-
-        Long memberId= jwtProvider.getUserFromJwt(accessToken);
+        Long memberId= extractMemberIdFromRequestHeader(authHeader);
         Feeling feeling=Feeling.valueOf(requestDto.getFeeling());
         List<Diary> diaries = diaryService.findDiariesByMemberIdAndFeeling(memberId,feeling);
 
@@ -216,25 +181,13 @@ public class DiaryController {
                     @RequestPart(value = "diaryContent") String diaryContent){
 
                 try {
-                    String accessToken = null;
-                    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                        accessToken = authHeader.substring(7);
-                    }
-                    else{
-                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
-
-                    }
-
+                    Long memberId=extractMemberIdFromRequestHeader(authHeader);
 
                     String imageUrl=null;
-
                     if(image!=null && !image.isEmpty() ){
                         imageUrl = s3UploaderService.upload(image);
 
                     }
-
-
-                    Long memberId= jwtProvider.getUserFromJwt(accessToken);
                     Member member= memberService.findByIdOrThrow(memberId);
                     Diary diary = new Diary();
                     diary.setTitle(diaryTitle);
@@ -250,74 +203,16 @@ public class DiaryController {
             SlowTypeCreateResponseDto responseDto=new SlowTypeCreateResponseDto(diary.getId(),diary.getContent(),diary.getTitle(),diary.getImageurl(),diary.getWritedAt());
 
             return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
-        } catch (Exception e) {
-            e.printStackTrace();
-
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
-        }
+        }catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
+                }
     }
 
-/*    @PatchMapping("/api/diary/update")
-    public ResponseEntity<?> updateDiary(
-            @RequestHeader(value = "Authorization") String authHeader,
-            @RequestPart(value = "imageUrl", required = false) MultipartFile imageFile,
-            @RequestPart(value="diaryId") Long diaryId,
-            @RequestPart(value = "diaryTitle") String diaryTitle,
-            @RequestPart(value = "diaryContent") String diaryContent) {
-
-        logger.info("Authorization Header: {}", authHeader);
-        logger.info("Received diaryId: {}", diaryId);
-        logger.info("Received diaryTitle: {}", diaryTitle);
-        logger.info("Received diaryContent: {}", diaryContent);
-
-
-
-        try{
-
-            String accessToken = null;
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                accessToken = authHeader.substring(7);
-                Long memberID= jwtProvider.getUserFromJwt(accessToken);
-                Diary diary=diaryService.findDiaryById(diaryId).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
-                if(diary.getMember().getId()!=memberID){
-
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
-                }
-            }
-            else{
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
-
-            }
-            String imageUrl=null;
-            if (imageFile!=null && !imageFile.isEmpty()){
-                imageUrl=s3UploaderService.upload(imageFile);
-
-                UpdateDiaryResponseDto responseDto=diaryService.updateDiary(diaryId,diaryContent,diaryTitle,imageUrl);
-                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
-
-            }
-            else{
-                UpdateDiaryResponseDto responseDto=diaryService.updateDiaryWithoutImage(diaryId,diaryContent,diaryTitle);
-                return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
-
-
-            }
-
-
-        }
-        catch (Exception e){
-
-            logger.error("An error occurred while updating diary", e);
-            e.printStackTrace();
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR,e.getMessage()));
-        }
-
-
-
-
-    }*/
 @PatchMapping("/api/diary/update")
 public ResponseEntity<?> updateDiary(
         @RequestHeader(value = "Authorization") String authHeader,
@@ -327,24 +222,19 @@ public ResponseEntity<?> updateDiary(
         String diaryTitle= requestDto.getDiaryTitle();
         String diaryContent= requestDto.getDiaryContent();
 
-
-
     try{
 
         String accessToken = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            accessToken = authHeader.substring(7);
-            Long memberID= jwtProvider.getUserFromJwt(accessToken);
-            Diary diary=diaryService.findDiaryById(requestDto.getDiaryId()).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
-            if(diary.getMember().getId()!=memberID){
+        Long memberId=extractMemberIdFromRequestHeader(authHeader);
+        accessToken = authHeader.substring(7);
+
+        Diary diary=diaryService.findDiaryById(requestDto.getDiaryId()).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        if(diary.getMember().getId()!=memberId){
 
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
-            }
         }
-        else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
 
-        }
+
         String imageUrl=null;
         if (imageFile!=null && !imageFile.isEmpty()){
 
@@ -361,7 +251,9 @@ public ResponseEntity<?> updateDiary(
 
         }
 
-
+    }
+    catch (IllegalArgumentException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
     }
     catch (Exception e){
         logger.error("An error occurred while updating diary", e);
@@ -371,37 +263,61 @@ public ResponseEntity<?> updateDiary(
     }
 
 
-
-
 }
 
 @DeleteMapping("api/diary/delete")
-    public ResponseEntity<?>deleteDiary(@RequestHeader(value = "Authorization") String authHeader,@RequestBody DiaryDeleteRequestDto diaryDeleteRequestDto){
-    String accessToken = null;
-    if (authHeader != null && authHeader.startsWith("Bearer ")) {
-        accessToken = authHeader.substring(7);
-        Long memberID= jwtProvider.getUserFromJwt(accessToken);
-        Diary diary=diaryService.findDiaryById(diaryDeleteRequestDto.getDiaryId()).orElseThrow(()->new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
-        if(diary.getMember().getId()!=memberID){
-
+    public ResponseEntity<?>deleteDiary(@RequestHeader(value = "Authorization") String authHeader,@RequestBody String rawBody){
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+        JsonNode rootNode = objectMapper.readTree(rawBody);
+        JsonNode diaryIdNode = rootNode.get("diaryId");
+        if (diaryIdNode == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request body");
+        }
+        Long diaryId = diaryIdNode.asLong();
+        Long memberId = extractMemberIdFromRequestHeader(authHeader);
+        Diary diary = diaryService.findDiaryById(diaryId)
+                .orElseThrow(() -> new NoSuchElementException("해당 ID의 일기를 찾을 수 없습니다."));
+        if (!diary.getMember().getId().equals(memberId)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.NOT_YOUR_DIARY));
         }
-    }
-    else{
+
+        diaryService.deleteDiary(diaryId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
+
+    } catch (IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
-
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing request by");
     }
-    diaryService.deleteDiary(diaryDeleteRequestDto.getDiaryId());
-    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED));
-
-
-
-
-
-
-
-
 }
+
+    @PostMapping("/api/diary/image")
+    public ResponseEntity<?> imageCreate(@RequestHeader("Authorization") String authHeader,@RequestBody ImageCreateRequestDto imageCreateRequestDto){
+        try{
+            Long memberId=extractMemberIdFromRequestHeader(authHeader);
+            ImageCreateResponseDto responseDto=diaryService.generateImageFromDiary(imageCreateRequestDto.getDiaryId());
+
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseDto));
+    }
+        catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    public Long extractMemberIdFromRequestHeader(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String accessToken = authHeader.substring(7);
+            return jwtProvider.getUserFromJwt(accessToken);
+        } else {
+            throw new IllegalArgumentException("Invalid Authorization header");
+        }
+    }
 
 
 
