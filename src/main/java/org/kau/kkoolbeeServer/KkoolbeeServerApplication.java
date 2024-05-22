@@ -16,7 +16,7 @@ public class KkoolbeeServerApplication {
 
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 		TimeZone tz = TimeZone.getDefault();
-		System.out.println("현재 시간대: " + tz.getID());
+
 
 
 	}

@@ -43,6 +43,7 @@ public enum ErrorType {
     ADVICE_NOT_FOUND(HttpStatus.NOT_FOUND, "요청하신 Diary에 맞는 Advice가 없습니다."),
     NOT_FOUND_REFRESH_TOKEN_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 리프레시 토큰입니다."),
     NOT_YOUR_DIARY(HttpStatus.NOT_FOUND,"해당 Diary에 접근할 수 있는 권한이 없습니다."),
+    NO_DIARY(HttpStatus.NOT_FOUND,"해당 Id에 맞는 Diary가 존재하지 않습니다."),
 
     /**
      * 500 INTERNAL SERVER ERROR
