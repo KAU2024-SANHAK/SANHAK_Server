@@ -2,6 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.Response;
 import jakarta.validation.Valid;
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
@@ -308,6 +309,14 @@ public ResponseEntity<?> updateDiary(
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
         }
+    }
+
+    @GetMapping("/api/diary/share")
+    public ResponseEntity<?> diaryShare(@RequestBody DiaryShareRequestDto requestDto){
+
+        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,diaryService.diaryShare(requestDto.getDiaryId())));
+
+
     }
 
     public Long extractMemberIdFromRequestHeader(String authHeader) {
