@@ -2,8 +2,7 @@ package org.kau.kkoolbeeServer.domain.diary.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Response;
-import jakarta.validation.Valid;
+
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
