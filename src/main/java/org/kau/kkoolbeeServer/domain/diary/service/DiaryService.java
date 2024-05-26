@@ -1,9 +1,11 @@
 package org.kau.kkoolbeeServer.domain.diary.service;
 
 import org.kau.kkoolbeeServer.S3.S3UploaderService;
+import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.kau.kkoolbeeServer.domain.diary.dto.request.OpenAiImageGenerationRequestDto;
+import org.kau.kkoolbeeServer.domain.diary.dto.response.DiaryShareResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.ImageCreateResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.OpenAiImageGenerationResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.dto.response.UpdateDiaryResponseDto;
@@ -133,6 +135,16 @@ public class DiaryService {
 
 
 
+    }
+    public DiaryShareResponseDto diaryShare(Long diaryId){
+        Diary findDiary=diaryRepository.findById(diaryId).orElseThrow(()->new NoSuchElementException());
+        String feeling = findDiary.getFeeling() != null ? findDiary.getFeeling().toString() : null;
+        AdviceResponseDto adviceResponseDto=AdviceResponseDto.fromAdviceOrNull(findDiary.getAdvice());
+
+        DiaryShareResponseDto responseDto=new DiaryShareResponseDto(findDiary.getId(), findDiary.getContent(),
+                findDiary.getTitle(), findDiary.getImageurl(), findDiary.getMember().getSocialNickname(),
+                adviceResponseDto,feeling);
+        return responseDto;
     }
 
     public ImageCreateResponseDto generateImageFromDiary(Long diaryId) throws IOException, NoSuchAlgorithmException{
