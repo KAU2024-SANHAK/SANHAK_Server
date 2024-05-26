@@ -311,9 +311,9 @@ public ResponseEntity<?> updateDiary(
     }
 
     @GetMapping("/api/diary/share")
-    public ResponseEntity<?> diaryShare(@RequestBody DiaryShareRequestDto requestDto){
+    public ResponseEntity<?> diaryShare(@RequestParam("diaryId") Long diaryId){
 
-        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,diaryService.diaryShare(requestDto.getDiaryId())));
+        return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,diaryService.diaryShare(diaryId)));
 
 
     }
