@@ -142,7 +142,7 @@ public class DiaryService {
         AdviceResponseDto adviceResponseDto=AdviceResponseDto.fromAdviceOrNull(findDiary.getAdvice());
 
         DiaryShareResponseDto responseDto=new DiaryShareResponseDto(findDiary.getId(), findDiary.getContent(),
-                findDiary.getTitle(), findDiary.getImageurl(), findDiary.getMember().getSocialNickname(),
+                findDiary.getTitle(), findDiary.getImageurl(), findDiary.getWritedAt(),findDiary.getMember().getSocialNickname(),
                 adviceResponseDto,feeling);
         return responseDto;
     }
