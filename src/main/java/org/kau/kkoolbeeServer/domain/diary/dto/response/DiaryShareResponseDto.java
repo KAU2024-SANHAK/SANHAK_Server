@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.kau.kkoolbeeServer.domain.advice.dto.AdviceResponseDto;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class DiaryShareResponseDto {
     private String diaryContent;
     private String diaryTitle;
     private String imageUrl;
+    private LocalDateTime createdDate;
     private String userName;
     private AdviceResponseDto advice;
     private String feeling;
