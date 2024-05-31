@@ -28,6 +28,7 @@ logging:
 openai:
   api.key: ${API_KEY}
 
+
 iamport:
   key: ${IAMPORT_KEY}
   secret: ${IAMPORT_SECRET}
