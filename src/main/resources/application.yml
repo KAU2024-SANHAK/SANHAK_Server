@@ -32,3 +32,7 @@ openai:
 iamport:
   key: ${IAMPORT_KEY}
   secret: ${IAMPORT_SECRET}
+
+discord:
+  webhook:
+    url: ${DISCORD_URL}
