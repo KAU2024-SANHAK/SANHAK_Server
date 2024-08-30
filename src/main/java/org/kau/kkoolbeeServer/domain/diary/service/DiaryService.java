@@ -233,6 +233,11 @@ public class DiaryService {
     }
 
 
+    public List<Diary> searchDiaries(Long memberId, String searchKeyword) {
+        return diaryRepository.findByMemberIdAndTitleContainingOrContentContaining(memberId, searchKeyword, searchKeyword);
+    }
+
+
 
 
 }
