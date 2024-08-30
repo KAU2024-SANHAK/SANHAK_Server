@@ -234,8 +234,9 @@ public class DiaryService {
 
 
     public List<Diary> searchDiaries(Long memberId, String searchKeyword) {
-        return diaryRepository.findByMemberIdAndTitleContainingOrContentContaining(memberId, searchKeyword, searchKeyword);
+        return diaryRepository.searchDiaries(memberId, searchKeyword, searchKeyword);
     }
+
 
 
 
