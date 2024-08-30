@@ -326,6 +326,7 @@ public ResponseEntity<?> updateDiary(
 
         try{
             Long memberId=extractMemberIdFromRequestHeader(authHeader);
+            System.out.println(memberId);
             String searchKeyword= requestDto.getSearchKeyword();
             List<Diary> diaries = diaryService.searchDiaries(memberId, searchKeyword);
 
