@@ -3,6 +3,8 @@ package org.kau.kkoolbeeServer.domain.diary.repository;
 import org.kau.kkoolbeeServer.domain.diary.Diary;
 import org.kau.kkoolbeeServer.domain.diary.Feeling;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,9 @@ public interface DiaryRepository extends JpaRepository<Diary,Long> {
 
     List<Diary> findByMemberIdAndFeeling(Long memberId,Feeling feeling);
 
-    List<Diary> findByMemberIdAndTitleContainingOrContentContaining(Long memberId, String titleKeyword, String contentKeyword);
+
+    @Query("SELECT d FROM Diary d WHERE d.member.id = :memberId AND (d.title LIKE %:titleKeyword% OR d.content LIKE %:contentKeyword%)")
+    List<Diary> searchDiaries(@Param("memberId") Long memberId, @Param("titleKeyword") String titleKeyword, @Param("contentKeyword") String contentKeyword);
+
 
 }
