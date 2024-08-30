@@ -18,4 +18,6 @@ public interface DiaryRepository extends JpaRepository<Diary,Long> {
 
     List<Diary> findByMemberIdAndFeeling(Long memberId,Feeling feeling);
 
+    List<Diary> findByMemberIdAndTitleContainingOrContentContaining(Long memberId, String titleKeyword, String contentKeyword);
+
 }

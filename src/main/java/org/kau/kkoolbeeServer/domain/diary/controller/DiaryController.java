@@ -320,6 +320,56 @@ public ResponseEntity<?> updateDiary(
 
     }
 
+    @GetMapping("/api/diary/search")
+
+    public ResponseEntity<?>diarySearch(@RequestHeader(value = "Authorization") String authHeader,@RequestBody SearchRequestDto requestDto){
+
+        try{
+            Long memberId=extractMemberIdFromRequestHeader(authHeader);
+            String searchKeyword= requestDto.getSearchKeyword();
+            List<Diary> diaries = diaryService.searchDiaries(memberId, searchKeyword);
+
+            if (diaries.isEmpty()) {
+                return ResponseEntity.status(ErrorType.REQUEST_VALIDATION_ERROR.getHttpStatus())
+                        .body(ApiResponse.error(ErrorType.REQUEST_VALIDATION_ERROR, "해당 검색어에 대한 일기가 존재하지 않습니다."));
+            }
+            List<DiarySearchResponseDto> diaryList = diaries.stream()
+                    .map(diary -> {
+                        String excerptContent = getFirstExcerpt(diary.getContent(), searchKeyword);
+
+
+
+
+                        return new DiarySearchResponseDto(diary.getId(),  diary.getWritedAt(),diary.getTitle(), diary.getImageurl(),excerptContent , searchKeyword);
+                    })
+                    .collect(Collectors.toList());
+
+            Map<String,List<DiarySearchResponseDto>> responseMap=Map.of("diaryList", diaryList);
+
+
+
+            return ResponseEntity.ok().body(ApiResponse.success(SuccessType.PROCESS_SUCCESSED,responseMap));
+
+
+
+        }  catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(ErrorType.INVALID_HTTP_REQUEST_ERROR));
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error(ErrorType.INTERNAL_SERVER_ERROR));
+
+
+
+
+        }
+
+
+    }
+
+
+
     public Long extractMemberIdFromRequestHeader(String authHeader) {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String accessToken = authHeader.substring(7);
@@ -328,6 +378,21 @@ public ResponseEntity<?> updateDiary(
             throw new IllegalArgumentException("Invalid Authorization header");
         }
     }
+
+
+    private String getFirstExcerpt(String content, String keyword) {
+        // content에 keyword가 없을 경우 null 반환
+        if (!content.contains(keyword)) {
+            return null; // 키워드가 없으면 null 반환
+        }
+
+        int index = content.indexOf(keyword);
+        int start = Math.max(0, index - 3); // 앞쪽 3자
+        int end = Math.min(content.length(), index + keyword.length() + 3); // 키워드 끝까지 + 3자
+
+        return content.substring(start, end); // 정해진 범위의 내용 반환
+    }
+
 
 
 
